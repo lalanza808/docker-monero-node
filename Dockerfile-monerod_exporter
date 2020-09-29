@@ -1,0 +1,11 @@
+FROM node:8
+
+WORKDIR /opt/monerod_exporter
+
+RUN git clone https://github.com/lalanza808/monerod_exporter.git --branch=docker --depth=1 .
+
+RUN npm install
+
+EXPOSE 8080
+
+ENTRYPOINT ["node", "index.js"]

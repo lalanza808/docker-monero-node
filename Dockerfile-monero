@@ -1,0 +1,34 @@
+FROM ubuntu:19.10 as og
+
+WORKDIR /opt/monero
+
+RUN apt-get update && apt-get install -y \
+    build-essential cmake pkg-config libboost-all-dev \
+    libssl-dev libzmq3-dev libunbound-dev libsodium-dev libpgm-dev git
+
+RUN git clone https://github.com/monero-project/monero --branch=v0.17.0.1 --depth=1 .
+
+RUN git submodule update --init --force
+
+RUN make -j2
+
+FROM ubuntu:19.10
+
+WORKDIR /data
+
+COPY --from=og /usr/lib/x86_64-linux-gnu/ /usr/lib/x86_64-linux-gnu/
+COPY --from=og /opt/monero/build/Linux/_no_branch_/release/bin/monerod /bin/monerod
+COPY --from=og /opt/monero/build/Linux/_no_branch_/release/bin/monero-wallet-cli /bin/monero-wallet-cli
+COPY --from=og /opt/monero/build/Linux/_no_branch_/release/bin/monero-wallet-rpc /bin/monero-wallet-rpc
+
+RUN adduser --system --group --disabled-password monero && \
+	mkdir -p /data && \
+	chown -R monero:monero /data
+
+USER monero
+
+EXPOSE 18080
+EXPOSE 18081
+EXPOSE 18083
+
+ENTRYPOINT ["monerod", "--data-dir=/data", "--p2p-bind-ip=0.0.0.0", "--p2p-bind-port=18080", "--rpc-bind-ip=0.0.0.0", "--rpc-bind-port=18083", "--non-interactive", "--confirm-external-bind", "--public-node", "--rpc-restricted-bind-port=18081", "--log-level=0"]

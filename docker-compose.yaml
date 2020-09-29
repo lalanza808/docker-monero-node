@@ -1,0 +1,63 @@
+version: '3'
+volumes:
+  grafana:
+  prometheus:
+services:
+  prometheus:
+    image: prom/prometheus:v2.18.0
+    container_name: prometheus
+    restart: unless-stopped
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --web.console.libraries=/usr/share/prometheus/console_libraries
+      - --web.console.templates=/usr/share/prometheus/consoles
+      - --web.enable-admin-api
+    volumes:
+      - prometheus:/prometheus
+      - ./files/prometheus:/etc/prometheus
+    ports:
+      - 9090:9090
+  grafana:
+    image: grafana/grafana:6.5.0
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+    environment:
+      HOSTNAME: grafana
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD}
+      GF_SERVER_ROOT_URL: ${GRAFANA_URL}
+      GF_ANALYTICS_REPORTING_ENABLED: "false"
+      GF_ANALYTICS_CHECK_FOR_UPDATES: "false"
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_USERS_ALLOW_ORG_CREATE: "false"
+      GF_LOG_LEVEL: "debug"
+    volumes:
+      - ./files/grafana/dashboards.yaml:/etc/grafana/provisioning/dashboards/default.yaml:ro
+      - ./files/grafana/prometheus.yaml:/etc/grafana/provisioning/datasources/prometheus.yaml:ro
+      - ./files/grafana/daemon_metrics.json:/var/lib/grafana/dashboards/daemon_metrics.json:ro
+      - grafana:/var/lib/grafana
+  exporter:
+    container_name: exporter
+    build:
+      context: .
+      dockerfile: Dockerfile-monerod_exporter
+    restart: unless-stopped
+    environment:
+      DAEMON_HOST: http://monerod:18083
+      PORT: 8080
+    ports:
+      - 8080:8080
+  monerod:
+    container_name: monerod
+    build:
+      context: .
+      dockerfile: Dockerfile-monero
+    volumes:
+      - ./data:/data
+    ports:
+      - 18080:18080
+      - 18081:18081
+      - 18083:18083
