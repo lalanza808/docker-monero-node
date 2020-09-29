@@ -10,7 +10,7 @@ RUN git clone https://github.com/monero-project/monero --branch=v0.17.0.1 --dept
 
 RUN git submodule update --init --force
 
-RUN make -j2
+RUN make -j1
 
 FROM ubuntu:19.10
 
