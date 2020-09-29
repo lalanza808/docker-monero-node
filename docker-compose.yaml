@@ -56,7 +56,7 @@ services:
       context: .
       dockerfile: Dockerfile-monero
     volumes:
-      - ./data:/data
+      - ${DATA_DIR:-./data}:/data
     ports:
       - 18080:18080
       - 18081:18081

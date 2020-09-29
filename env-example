@@ -1,0 +1,2 @@
+DATA_DIR=/opt/monero/data
+GRAFANA_PASSWORD=xxxxxxx
