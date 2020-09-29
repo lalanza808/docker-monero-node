@@ -29,6 +29,7 @@ USER monero
 
 EXPOSE 18080
 EXPOSE 18081
+EXPOSE 18082
 EXPOSE 18083
 
-ENTRYPOINT ["monerod", "--data-dir=/data", "--p2p-bind-ip=0.0.0.0", "--p2p-bind-port=18080", "--rpc-bind-ip=0.0.0.0", "--rpc-bind-port=18083", "--non-interactive", "--confirm-external-bind", "--public-node", "--rpc-restricted-bind-port=18081", "--log-level=0"]
+ENTRYPOINT ["monerod", "--data-dir=/data", "--p2p-bind-ip=0.0.0.0", "--p2p-bind-port=18080", "--rpc-bind-ip=0.0.0.0", "--rpc-bind-port=18083", "--zmq-rpc-bind-ip=0.0.0.0", "--zmq-rpc-bind-port=18082", "--non-interactive", "--confirm-external-bind", "--public-node", "--rpc-restricted-bind-port=18081", "--log-level=0"]
