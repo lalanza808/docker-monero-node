@@ -55,6 +55,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile-monero
+      args:
+        threads: ${THREADS:-1}
     volumes:
       - ${DATA_DIR:-./data}:/data
     ports:
@@ -62,3 +64,5 @@ services:
       - 18081:18081 # restricted rpc
       - 18082:18082 # zmq
       - 18083:18083 # unrestricted rpc
+    command:
+      monerod --data-dir=/data --p2p-bind-ip=0.0.0.0 --p2p-bind-port=18080 --rpc-restricted-bind-port=18081 --zmq-rpc-bind-ip=0.0.0.0 --zmq-rpc-bind-port=18082 --rpc-bind-ip=0.0.0.0 --rpc-bind-port=18083 --non-interactive --confirm-external-bind --public-node --log-level=0
