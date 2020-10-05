@@ -19,7 +19,7 @@ down-full: ## Stop the containers
 	docker-compose -f docker-compose.compile.yaml up -d
 
 logs: ## Get logs from the containers
-	docker-compose -f docker-compose.nocompile.yaml up -d
+	docker-compose -f docker-compose.nocompile.yaml logs -f
 
 logs-full: ## Get logs from the containers
-	docker-compose -f docker-compose.compile.yaml up -d
+	docker-compose -f docker-compose.compile.yaml logs -f
