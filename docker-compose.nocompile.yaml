@@ -42,8 +42,8 @@ services:
   exporter:
     container_name: exporter
     build:
-      context: .
-      dockerfile: Dockerfile-monerod_exporter
+      context: dockerfiles
+      dockerfile: monerod_exporter
     restart: unless-stopped
     environment:
       DAEMON_HOST: http://monerod:18083
@@ -53,8 +53,8 @@ services:
   monerod:
     container_name: monerod
     build:
-      context: .
-      dockerfile: Dockerfile-monero
+      context: dockerfiles
+      dockerfile: monero_nocompile
       args:
         threads: ${THREADS:-1}
     volumes:

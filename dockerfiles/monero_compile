@@ -23,12 +23,6 @@ COPY --from=og /opt/monero/build/Linux/_no_branch_/release/bin/monerod /bin/mone
 COPY --from=og /opt/monero/build/Linux/_no_branch_/release/bin/monero-wallet-cli /bin/monero-wallet-cli
 COPY --from=og /opt/monero/build/Linux/_no_branch_/release/bin/monero-wallet-rpc /bin/monero-wallet-rpc
 
-RUN adduser --system --group --disabled-password monero && \
-	mkdir -p /data && \
-	chown -R monero:monero /data
-
-USER monero
-
 EXPOSE 18080
 EXPOSE 18081
 EXPOSE 18082
