@@ -13,10 +13,10 @@ up-full: ## Build and run the required containers by compiling source
 	docker-compose -f docker-compose.compile.yaml up -d
 
 down: ## Stop the containers
-	docker-compose -f docker-compose.nocompile.yaml up -d
+	docker-compose -f docker-compose.nocompile.yaml down
 
 down-full: ## Stop the containers
-	docker-compose -f docker-compose.compile.yaml up -d
+	docker-compose -f docker-compose.compile.yaml down
 
 logs: ## Get logs from the containers
 	docker-compose -f docker-compose.nocompile.yaml logs -f
