@@ -7,19 +7,19 @@ help:
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
 up: ## Build and run the required containers by fetching binaries
-	docker-compose -f docker-compose.nocompile.yaml up -d
+	docker-compose -f docker-compose.yaml up -d
 
 up-full: ## Build and run the required containers by compiling source
-	docker-compose -f docker-compose.compile.yaml up -d
+	docker-compose -f docker-compose.full.yaml up -d
 
 down: ## Stop the containers
-	docker-compose -f docker-compose.nocompile.yaml down
+	docker-compose -f docker-compose.yaml down
 
 down-full: ## Stop the containers
-	docker-compose -f docker-compose.compile.yaml down
+	docker-compose -f docker-compose.full.yaml down
 
 logs: ## Get logs from the containers
-	docker-compose -f docker-compose.nocompile.yaml logs -f
+	docker-compose -f docker-compose.yaml logs -f
 
 logs-full: ## Get logs from the containers
-	docker-compose -f docker-compose.compile.yaml logs -f
+	docker-compose -f docker-compose.full.yaml logs -f
