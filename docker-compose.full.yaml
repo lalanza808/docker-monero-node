@@ -57,6 +57,7 @@ services:
       dockerfile: monero_compile
       args:
         threads: ${THREADS:-1}
+    restart: unless-stopped
     volumes:
       - ${DATA_DIR:-./data}:/data
     ports:
