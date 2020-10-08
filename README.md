@@ -21,6 +21,14 @@ vim .env
 docker-compose build  # make build
 ```
 
+The following ports will be bound for `monerod`:
+- 18080   # p2p
+- 18089   # restricted rpc
+- 18082   # zmq
+- 18083   # unrestricted rpc
+
+You will want to open/allow ports 18080 and 18089 in your firewall for usage as a remote/public node.
+
 ## Usage
 
 It's fairly simple, use `docker-compose` to bring the containers up and down and look at logs.
