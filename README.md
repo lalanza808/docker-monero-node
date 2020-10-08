@@ -2,7 +2,7 @@
 
 Simple way to run a Monero node with some basic monitoring tools packaged in.
 
-Leverages Prometheus, Grafana, and [ExcitableAardvark/monerod_exporter](https://github.com/ExcitableAardvark/monerod_exporter.git) on top of `monerod`.
+Leverages [Prometheus](https://prometheus.io/docs/introduction/overview/), [Grafana](https://grafana.com/), and [ExcitableAardvark/monerod_exporter](https://github.com/ExcitableAardvark/monerod_exporter.git) on top of `monerod`.
 
 ## Setup
 
