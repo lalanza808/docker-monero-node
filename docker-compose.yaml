@@ -61,9 +61,9 @@ services:
     volumes:
       - ${DATA_DIR:-./data}:/data
     ports:
-      - 18080:18080 # p2p
-      - 18089:18089 # restricted rpc
-      - 127.0.0.1:18082:18082 # zmq
-      - 127.0.0.1:18083:18083 # unrestricted rpc
+      - ${P2P_PORT:-18080}:18080                    # p2p
+      - ${RESTRICTED_PORT:-18081}:18081             # restricted rpc
+      - 127.0.0.1:${ZMQ_PORT:-18082}:18082          # zmq
+      - 127.0.0.1:${UNRESTRICTED_PORT:-18083}:18083 # unrestricted rpc
     command:
-      monerod --data-dir=/data --p2p-bind-ip=0.0.0.0 --p2p-bind-port=18080 --rpc-restricted-bind-port=18089 --zmq-rpc-bind-ip=0.0.0.0 --zmq-rpc-bind-port=18082 --rpc-bind-ip=0.0.0.0 --rpc-bind-port=18083 --non-interactive --confirm-external-bind --public-node --log-level=0
+      monerod --data-dir=/data --p2p-bind-ip=0.0.0.0 --p2p-bind-port=18080 --rpc-restricted-bind-port=18081 --zmq-rpc-bind-ip=0.0.0.0 --zmq-rpc-bind-port=18082 --rpc-bind-ip=0.0.0.0 --rpc-bind-port=18083 --non-interactive --confirm-external-bind --public-node --log-level=0
