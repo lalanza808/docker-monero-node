@@ -13,7 +13,7 @@ The only requirements are [Docker](https://docs.docker.com/get-docker/) and [Doc
 git clone https://github.com/lalanza808/docker-monero-node
 cd docker-monero-node
 
-# OPTIONAL: Setup Grafana password and blockchain storage location
+# OPTIONAL: Setup Grafana password, blockchain storage location, or port overrides
 cp env-example .env
 vim .env
 
@@ -21,13 +21,13 @@ vim .env
 docker-compose build  # make build
 ```
 
-The following ports will be bound for `monerod`:
+The following ports will be bound for `monerod` by default, but you can override in `.env`:
 - 18080   # p2p
-- 18089   # restricted rpc
+- 18081   # restricted rpc
 - 18082   # zmq
 - 18083   # unrestricted rpc
 
-You will want to open/allow ports 18080 and 18089 in your firewall for usage as a remote/public node.
+You will want to open/allow ports 18080 and 18081 in your firewall for usage as a remote/public node (or whichever p2p and restricted ports you picked).
 
 ## Usage
 
