@@ -1,4 +1,4 @@
-FROM ubuntu:19.10 as og
+FROM ubuntu:20.04 as og
 
 ARG threads
 
@@ -8,13 +8,13 @@ RUN apt-get update && apt-get install -y \
     build-essential cmake pkg-config libboost-all-dev \
     libssl-dev libzmq3-dev libunbound-dev libsodium-dev libpgm-dev git
 
-RUN git clone https://github.com/monero-project/monero --branch=v0.17.0.1 --depth=1 .
+RUN git clone https://github.com/monero-project/monero --branch=v0.17.1.0 --depth=1 .
 
 RUN git submodule update --init --force
 
 RUN make -j$threads
 
-FROM ubuntu:19.10
+FROM ubuntu:20.04
 
 WORKDIR /data
 
