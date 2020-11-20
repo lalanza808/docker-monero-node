@@ -33,6 +33,8 @@ RUN apt-get update \
 
 WORKDIR /data
 
+RUN wget https://gui.xmr.pm/files/block.txt -O /tmp/block.txt -q
+
 EXPOSE 18080
 EXPOSE 18081
 EXPOSE 18082
