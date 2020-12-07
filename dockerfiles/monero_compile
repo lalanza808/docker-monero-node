@@ -1,5 +1,6 @@
 FROM ubuntu:20.04 as og
 
+ENV DEBIAN_FRONTEND noninteractive
 ARG threads
 
 WORKDIR /opt/monero
