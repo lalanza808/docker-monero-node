@@ -141,7 +141,7 @@
         "total": false,
         "values": false
       },
-      "lines": true,
+      "lines": false,
       "linewidth": 1,
       "nullPointMode": "connected",
       "options": {
@@ -234,7 +234,7 @@
         "total": false,
         "values": false
       },
-      "lines": true,
+      "lines": false,
       "linewidth": 1,
       "nullPointMode": "connected",
       "options": {
@@ -418,7 +418,7 @@
         "values": false
       },
       "lines": true,
-      "linewidth": 2,
+      "linewidth": 3,
       "nullPointMode": "null",
       "options": {
         "dataLinks": []
@@ -579,7 +579,7 @@
     "list": []
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-2d",
     "to": "now"
   },
   "timepicker": {
@@ -599,5 +599,5 @@
   "timezone": "",
   "title": "Daemon Stats",
   "uid": "0ktA4KDGk",
-  "version": 3
+  "version": 4
 }
