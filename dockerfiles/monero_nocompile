@@ -1,7 +1,7 @@
 FROM ubuntu:20.04
 
-ENV MONERO_HASH 95666508e695637830b4c1700538c717ff97f02f181fbb337a109763372c8d34
-ENV MONERO_DL_URL https://downloads.getmonero.org/cli/monero-linux-x64-v0.17.1.5.tar.bz2
+ENV MONERO_HASH 01bb6e18773a461a4dcfe2a6d4e4f7e1708b26634bc56696d68c539c3a66f81a
+ENV MONERO_DL_URL https://downloads.getmonero.org/cli/monero-linux-x64-v0.17.1.6.tar.bz2
 ENV MONERO_DL_FILE monero.tar.bz2
 ENV MONERO_SUMS_FILE sha256sums
 
@@ -32,8 +32,6 @@ RUN apt-get update \
   && rm -rf ./tmp ${MONERO_SUMS_FILE} ${MONERO_DL_FILE}
 
 WORKDIR /data
-
-RUN wget https://gui.xmr.pm/files/block.txt -O /tmp/block.txt -q
 
 EXPOSE 18080
 EXPOSE 18081
