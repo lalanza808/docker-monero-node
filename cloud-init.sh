@@ -1,26 +1,79 @@
 #!/bin/bash
 
+sleep 30
+
 # Install packages
 apt-get update
 apt-get upgrade -y
 apt-get install software-properties-common sudo git -y
-# apt-get install certbot nginx python3 python3-virtualenv -y
-# apt-get install docker.io docker-compose -y
+apt-get install certbot nginx python3 python3-virtualenv -y
+apt-get install docker.io docker-compose -y
 
-# Setup certs
-mkdir -p /etc/ssl/certs
-openssl dhparam -out /etc/ssl/certs/dhparam.pem -2 2048
-# service nginx stop
-# certbot certonly --standalone -d ${DOMAIN} --agree-tos -m ${ACME_EMAIL} -n
-# service nginx start
-
-# Setup Nginx
+# Setup certs and Nginx
 mkdir -p /etc/nginx/conf.d
-# rm -f /etc/nginx/sites-enabled/default
-# cp conf/ssl.conf /etc/nginx/conf.d/ssl.conf
-# cp conf/${DOMAIN}.conf /etc/nginx/sites-enabled/${DOMAIN}.conf
-# nginx -t
-# nginx -s reload
+mkdir -p /etc/ssl/certs
+rm -f /etc/nginx/sites-enabled/default
+openssl dhparam -out /etc/ssl/certs/dhparam.pem -2 2048
+cat << EOF > /etc/nginx/conf.d/ssl.conf
+## SSL Certs are referenced in the actual Nginx config per-vhost
+# Disable insecure SSL v2. Also disable SSLv3, as TLS 1.0 suffers a downgrade attack, allowing an attacker to force a connection to use SSLv3 and therefore disable forward secrecy.
+# ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+# Strong ciphers for PFS
+ssl_ciphers 'EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH';
+# Use server's preferred cipher, not the client's
+# ssl_prefer_server_ciphers on;
+ssl_session_cache shared:SSL:10m;
+# Use ephemeral 4096 bit DH key for PFS
+ssl_dhparam /etc/ssl/certs/dhparam.pem;
+# Use OCSP stapling
+ssl_stapling on;
+ssl_stapling_verify on;
+resolver 1.1.1.1 valid=300s;
+resolver_timeout 5s;
+# Enable HTTP Strict Transport
+add_header Strict-Transport-Security "max-age=63072000; includeSubdomains; preload";
+add_header X-Frame-Options "DENY";
+EOF
+cat << EOF > /etc/nginx/sites-enabled/${DOMAIN}.conf
+# Redirect inbound http to https
+server {
+    listen 80 default_server;
+    server_name ${DOMAIN};
+    index index.php index.html;
+    return 301 https://${DOMAIN}$request_uri;
+}
+
+# Load SSL configs and serve SSL site
+server {
+    listen 443 ssl;
+    server_name ${DOMAIN};
+    error_log /var/log/nginx/${DOMAIN}-error.log warn;
+    access_log /var/log/nginx/${DOMAIN}-access.log;
+    client_body_in_file_only clean;
+    client_body_buffer_size 32K;
+    # set max upload size
+    client_max_body_size 8M;
+    sendfile on;
+    send_timeout 600s;
+
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Frame-Options "SAMEORIGIN";
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+        proxy_redirect off;
+    }
+
+    include conf.d/ssl.conf;
+    ssl_certificate /etc/letsencrypt/live/${DOMAIN}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${DOMAIN}/privkey.pem;
+}
+EOF
+service nginx stop
+certbot certonly --standalone -d ${DOMAIN} --agree-tos -m ${ACME_EMAIL} -n
+service nginx start
 
 # Setup app users
 useradd -m -s $(which false) monero
