@@ -83,6 +83,7 @@ usermod -aG docker monero
 umount /dev/sda
 mkdir -p /opt/monero
 mount /dev/sda /opt/monero
+rm -rf /opt/monero/*
 git clone https://github.com/lalanza808/docker-monero-node /opt/monero
 cat << EOF > /opt/monero/.env
 DATA_DIR=/opt/monero/data
