@@ -87,7 +87,8 @@ rm -rf /opt/monero/*
 git clone https://github.com/lalanza808/docker-monero-node /opt/monero
 cat << EOF > /opt/monero/.env
 DATA_DIR=/opt/monero/data
-GRAFANA_URL=${DOMAIN}
+GRAFANA_URL=https://${DOMAIN}
+GRAFANA_PASSSWORD=$(openssl rand -base64 12)
 P2P_PORT=18080
 RESTRICTED_PORT=18081
 ZMQ_PORT=18082
