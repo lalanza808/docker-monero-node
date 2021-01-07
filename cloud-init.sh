@@ -77,6 +77,22 @@ service nginx start
 
 # Setup app users
 useradd -m -s $(which false) monero
+usermod -aG docker monero
+
+# Setup Monero node
+umount /dev/sda
+mkdir -p /opt/monero
+mount /dev/sda /opt/monero
+git clone https://github.com/lalanza808/docker-monero-node /opt/monero
+cat << EOF > /opt/monero/.env
+DATA_DIR=/opt/monero/data
+GRAFANA_URL=${DOMAIN}
+P2P_PORT=18080
+RESTRICTED_PORT=18081
+ZMQ_PORT=18082
+UNRESTRICTED_PORT=18083
+EOF
+chown -R monero:monero /opt/monero
 
 # Run Monero node as monero user
-sudo -u monero bash -c "git clone https://github.com/lalanza808/docker-monero-node xnc && cd xnc && docker-compose up -d"
+sudo -u monero bash -c "cd /opt/monero && docker-compose up -d"
