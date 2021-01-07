@@ -26,14 +26,14 @@ services:
       - 127.0.0.1:3000:3000
     environment:
       HOSTNAME: grafana
-      GF_SECURITY_ADMIN_USER: admin
-      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD}
       GF_SERVER_ROOT_URL: ${GRAFANA_URL}
       GF_ANALYTICS_REPORTING_ENABLED: "false"
       GF_ANALYTICS_CHECK_FOR_UPDATES: "false"
       GF_USERS_ALLOW_SIGN_UP: "false"
       GF_USERS_ALLOW_ORG_CREATE: "false"
-      GF_LOG_LEVEL: "debug"
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_BASIC_ENABLED: "false"
+      GF_AUTH_DISABLE_LOGIN_FORM: "true"
     volumes:
       - ./files/grafana/dashboards.yaml:/etc/grafana/provisioning/dashboards/default.yaml:ro
       - ./files/grafana/prometheus.yaml:/etc/grafana/provisioning/datasources/prometheus.yaml:ro

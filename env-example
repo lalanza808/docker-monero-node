@@ -1,5 +1,5 @@
 DATA_DIR=/opt/monero/data
-GRAFANA_PASSWORD=xxxxxxx
+GRAFANA_URL=http://mynodeurl.com
 P2P_PORT=18080
 RESTRICTED_PORT=18081
 ZMQ_PORT=18082
