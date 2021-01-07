@@ -30,9 +30,6 @@ ssl_stapling on;
 ssl_stapling_verify on;
 resolver 1.1.1.1 valid=300s;
 resolver_timeout 5s;
-# Enable HTTP Strict Transport
-add_header Strict-Transport-Security "max-age=63072000; includeSubdomains; preload";
-add_header X-Frame-Options "DENY";
 EOF
 cat << EOF > /etc/nginx/sites-enabled/${DOMAIN}.conf
 # Redirect inbound http to https
