@@ -13,10 +13,10 @@ up-full: ## Build and run the required containers by compiling source
 	docker-compose -f docker-compose.full.yaml up -d
 
 build: ## Build the required containers by fetching binaries
-	docker-compose -f docker-compose.yaml build --no-cache
+	docker-compose -f docker-compose.yaml build
 
 build-full: ## Build the required containers by compiling source
-	docker-compose -f docker-compose.full.yaml build --no-cache
+	docker-compose -f docker-compose.full.yaml build
 
 down: ## Stop the containers
 	docker-compose -f docker-compose.yaml down
@@ -25,7 +25,7 @@ down-full: ## Stop the containers
 	docker-compose -f docker-compose.full.yaml down
 
 logs: ## Get logs from the containers
-	docker-compose -f docker-compose.yaml logs -f
+	docker-compose -f docker-compose.yaml logs -f monerod
 
 logs-full: ## Get logs from the containers
-	docker-compose -f docker-compose.full.yaml logs -f
+	docker-compose -f docker-compose.full.yaml logs -f monerod
