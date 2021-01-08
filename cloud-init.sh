@@ -5,7 +5,7 @@ sleep 30
 # Install packages
 apt-get update
 apt-get upgrade -y
-apt-get install software-properties-common sudo git -y
+apt-get install software-properties-common sudo git make -y
 apt-get install certbot nginx python3 python3-virtualenv -y
 apt-get install docker.io docker-compose -y
 
