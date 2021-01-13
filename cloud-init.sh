@@ -89,8 +89,13 @@ P2P_PORT=18080
 RESTRICTED_PORT=18081
 ZMQ_PORT=18082
 UNRESTRICTED_PORT=18083
+GF_AUTH_ANONYMOUS_ENABLED=true
+GF_AUTH_BASIC_ENABLED=true
+GF_AUTH_DISABLE_LOGIN_FORM=false
+GF_SECURITY_ADMIN_PASSWORD=${GRAF_PASS}
+GF_SECURITY_ADMIN_USER=${GRAF_USER}
 EOF
 chown -R monero:monero /opt/monero
 
 # Run Monero node as monero user
-sudo -u monero bash -c "cd /opt/monero && docker-compose up -d"
+sudo -u monero bash -c "cd /opt/monero && make up"
