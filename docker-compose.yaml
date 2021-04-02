@@ -2,6 +2,7 @@ version: '3'
 volumes:
   grafana:
   prometheus:
+  tor:
 services:
   prometheus:
     image: prom/prometheus:v2.18.0
@@ -54,6 +55,19 @@ services:
       PORT: 8080
     ports:
       - 127.0.0.1:8080:8080
+  tor:
+    container_name: tor
+    build:
+      context: dockerfiles
+      dockerfile: tor
+    restart: unless-stopped
+    ports:
+      - 127.0.0.1:9050:9050
+    volumes:
+      - tor:/var/lib/tor
+    networks:
+      monero:
+        ipv4_address: 172.96.0.15
   monerod:
     container_name: monerod
     build:
@@ -62,10 +76,20 @@ services:
     restart: unless-stopped
     volumes:
       - ${DATA_DIR:-./data}:/data
+    networks:
+      monero:
+        ipv4_address: 172.96.0.20
     ports:
       - ${P2P_PORT:-18080}:18080                    # p2p
       - ${RESTRICTED_PORT:-18081}:18081             # restricted rpc
       - 127.0.0.1:${ZMQ_PORT:-18082}:18082          # zmq
       - 127.0.0.1:${UNRESTRICTED_PORT:-18083}:18083 # unrestricted rpc
     command:
-      monerod --data-dir=/data --p2p-bind-ip=0.0.0.0 --p2p-bind-port=18080 --rpc-restricted-bind-ip=0.0.0.0 --rpc-restricted-bind-port=18081 --zmq-rpc-bind-ip=0.0.0.0 --zmq-rpc-bind-port=18082 --rpc-bind-ip=0.0.0.0 --rpc-bind-port=18083 --non-interactive --confirm-external-bind --public-node --log-level=0 --enable-dns-blocklist
+      monerod --data-dir=/data --p2p-bind-ip=0.0.0.0 --p2p-bind-port=18080 --rpc-restricted-bind-ip=0.0.0.0 --rpc-restricted-bind-port=18081 --zmq-rpc-bind-ip=0.0.0.0 --zmq-rpc-bind-port=18082 --rpc-bind-ip=0.0.0.0 --rpc-bind-port=18083 --non-interactive --confirm-external-bind --public-node --log-level=0 --enable-dns-blocklist --tx-proxy tor,172.96.0.15:9050
+networks:
+  monero:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.96.0.0/16

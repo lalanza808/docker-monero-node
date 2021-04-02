@@ -8,6 +8,7 @@ help:
 
 up: ## Build and run the required containers by fetching binaries
 	docker-compose -f docker-compose.yaml up -d
+	docker-compose -f docker-compose.yaml exec tor cat /var/lib/tor/monero/hostname
 
 up-full: ## Build and run the required containers by compiling source
 	docker-compose -f docker-compose.full.yaml up -d
@@ -29,3 +30,6 @@ logs: ## Get logs from the containers
 
 logs-full: ## Get logs from the containers
 	docker-compose -f docker-compose.full.yaml logs -f monerod
+
+tor: ## Get onion address for the Monero node
+	docker-compose -f docker-compose.yaml exec tor cat /var/lib/tor/monero/hostname
