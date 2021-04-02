@@ -56,7 +56,7 @@ services:
     ports:
       - 127.0.0.1:8080:8080
   tor:
-    container_name: tor
+    container_name: monerod_tor
     build:
       context: dockerfiles
       dockerfile: tor
