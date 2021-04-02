@@ -33,3 +33,6 @@ logs-full: ## Get logs from the containers
 
 tor: ## Get onion address for the Monero node
 	docker-compose -f docker-compose.yaml exec tor cat /var/lib/tor/monero/hostname
+
+post: ## Post onion address to monero.fail
+	docker-compose -f docker-compose.yaml exec tor bash /post.sh

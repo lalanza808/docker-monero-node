@@ -1,12 +1,14 @@
 FROM ubuntu:20.04
 
-RUN apt-get update && apt-get install tor -y
+RUN apt-get update && apt-get install tor curl -y
 
 RUN mkdir -p /run/tor \
   && chown -R debian-tor:debian-tor /run/tor \
   && chmod 700 -R /run/tor
 
 COPY conf/torrc /etc/tor/torrc
+
+COPY conf/post.sh /post.sh
 
 USER debian-tor
 
