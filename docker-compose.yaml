@@ -13,7 +13,7 @@ services:
       - --web.console.libraries=/usr/share/prometheus/console_libraries
       - --web.console.templates=/usr/share/prometheus/consoles
       - --web.enable-admin-api
-      - --storage.tsdb.retention.time=180d
+      - --storage.tsdb.retention.time=360d
     volumes:
       - prometheus:/prometheus
       - ./files/prometheus:/etc/prometheus
