@@ -28,6 +28,7 @@ services:
     environment:
       HOSTNAME: grafana
       GF_SERVER_ROOT_URL: "${GRAFANA_URL}"
+      GF_SERVER_SERVE_FROM_SUB_PATH: "${GF_SERVER_SERVE_FROM_SUB_PATH:-false}"
       GF_ANALYTICS_REPORTING_ENABLED: "false"
       GF_ANALYTICS_CHECK_FOR_UPDATES: "false"
       GF_USERS_ALLOW_SIGN_UP: "false"

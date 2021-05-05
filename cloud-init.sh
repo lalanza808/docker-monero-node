@@ -13,6 +13,36 @@ apt-get upgrade -y
 apt-get install software-properties-common sudo git make -y
 apt-get install certbot nginx python3 python3-virtualenv -y
 apt-get install docker.io docker-compose -y
+apt-get install tor -y
+
+# Setup Tor
+mkdir -p /run/tor
+chown -R debian-tor:debian-tor /run/tor
+chmod 700 -R /run/tor
+mkdir -p /var/www/tor
+cat << EOF > /etc/tor/torrc
+BridgeRelay 1
+ControlSocket /run/tor/control
+ControlSocketsGroupWritable 1
+CookieAuthentication 1
+CookieAuthFileGroupReadable 1
+CookieAuthFile /run/tor/control.authcookie
+DataDirectory /var/lib/tor
+ExitPolicy reject6 *:*, reject *:*
+ExitRelay 0
+IPv6Exit 0
+Log notice stdout
+ORPort 9001
+PublishServerDescriptor 0
+SOCKSPort 9051
+HiddenServiceDir /var/lib/tor/monero
+HiddenServicePort 18081
+EOF
+systemctl enable tor
+systemctl restart tor
+cp /var/lib/tor/monero/hostname /var/www/tor/index.html
+chown -R nobody:nogroup /var/www/tor
+chmod 644 /var/www/tor/index.html
 
 # Setup certs and Nginx
 mkdir -p /etc/nginx/conf.d
@@ -58,7 +88,7 @@ server {
     sendfile on;
     send_timeout 600s;
 
-    location / {
+    location /grafana {
         proxy_pass http://127.0.0.1:3000;
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
@@ -66,6 +96,10 @@ server {
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto \$scheme;
         proxy_redirect off;
+    }
+
+    location /tor {
+        alias /var/www/tor;
     }
 
     include conf.d/ssl.conf;
@@ -89,7 +123,8 @@ rm -rf /opt/monero/*
 git clone https://github.com/lalanza808/docker-monero-node /opt/monero
 cat << EOF > /opt/monero/.env
 DATA_DIR=/opt/monero/data
-GRAFANA_URL=https://${DOMAIN}
+GRAFANA_URL=https://${DOMAIN}/grafana
+GF_SERVER_SERVE_FROM_SUB_PATH=true
 P2P_PORT=18080
 RESTRICTED_PORT=18081
 ZMQ_PORT=18082
@@ -104,3 +139,11 @@ chown -R monero:monero /opt/monero
 
 # Run Monero node as monero user
 sudo -u monero bash -c "cd /opt/monero && make up"
+
+# Post nodes to monero.fail
+ONION_ADDR=$(cat /var/lib/tor/monero/hostname)
+ONION_URL="http://${ONION_ADDR}:18081"
+CLEAR_URL="http://$(hostname).${DOMAIN}:18081"
+
+curl -q -X POST https://monero.fail/add -d node_url="${ONION_URL}"
+curl -q -X POST https://monero.fail/add -d node_url="${CLEAR_URL}"
