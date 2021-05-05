@@ -40,6 +40,7 @@ HiddenServicePort 18081
 EOF
 systemctl enable tor
 systemctl restart tor
+sleep 20
 cp /var/lib/tor/monero/hostname /var/www/tor/index.html
 chown -R nobody:nogroup /var/www/tor
 chmod 644 /var/www/tor/index.html
