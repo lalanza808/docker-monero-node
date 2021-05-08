@@ -32,7 +32,7 @@ ExitPolicy reject6 *:*, reject *:*
 ExitRelay 0
 IPv6Exit 0
 Log notice stdout
-ORPort 9001
+ORPort 127.0.0.1:9001
 PublishServerDescriptor 0
 SOCKSPort 9051
 HiddenServiceDir /var/lib/tor/monero
