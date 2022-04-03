@@ -55,3 +55,25 @@ ssh <VPS OR SERVER IP> -L 3000:localhost:3000
 Then navigate to http://localhost:3000. Here is what the graph looks like:
 
 ![](static/monerod_grafana.png)
+
+## Updating your Monero daemon
+
+If your Monero daemon is out of date, then you can do the following to update your node:
+
+1. Change to the directory where you cloned this repository. `cd docker-monero-node`
+1. Stop your node with `make down` (or `make down-full` if you compiled from source).
+1. Pull down the latest for this repository with `git pull`
+1. Build a new docker image with the latest Monero daemon with `make build` (or `make build-full` if you compiled from source).
+1. Then run the new docker with `make up` (or `make up-full` if you compiled from source).
+1. Then check that your node is running the latest version available.
+1. If this is not the latest, please either [file an issue here](https://github.com/lalanza808/docker-monero-node/issues) or fork it and contribute the update back here.
+
+```
+You type:
+docker exec -it monerod bash 
+
+You see:
+root@730cdd0ccc6e:/data# monerod --version
+Monero 'Oxygen Orion' (v0.17.3.0-release)
+```
+
