@@ -6,7 +6,7 @@ Leverages [Prometheus](https://prometheus.io/docs/introduction/overview/), [Graf
 
 ## Setup
 
-The only requirements are [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/). Ensure those are installed on your system. There's an optional `Makefile` provided if you'd like to use that, just ensure `make` is installed.
+The only requirements are [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/). Ensure those are installed on your system. There's an optional `Makefile` provided if you'd like to use that, just ensure `make` is installed. Type `make help` for more information about the make options.
 
 ```
 # Clone and enter the repository
