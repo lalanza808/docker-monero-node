@@ -1,4 +1,4 @@
-FROM ubuntu:20.04 as og
+FROM ubuntu:22.10 as og
 
 ENV DEBIAN_FRONTEND noninteractive
 ARG threads
