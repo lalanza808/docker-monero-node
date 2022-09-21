@@ -1,14 +1,14 @@
 FROM ubuntu:22.04
 
-ENV MONERO_HASH 9318e522a5cf95bc856772f15d7507fdef2c028e01f70d020078ad5e208f1304
-ENV MONERO_DL_URL https://downloads.getmonero.org/cli/monero-linux-x64-v0.18.1.0.tar.bz2
+ENV MONERO_HASH 937dfcc48d91748dd2e8f58714dfc45d17a0959dff33fc7385bbe06344ff2c16
+ENV MONERO_DL_URL https://downloads.getmonero.org/cli/monero-linux-x64-v0.18.1.1.tar.bz2
 ENV MONERO_DL_FILE monero.tar.bz2
 ENV MONERO_SUMS_FILE sha256sums
 
 WORKDIR /opt/monero
 
 # Update system and install dependencies
-# Download Monero binaries from Github
+# Download Monero binaries from getmonero.org
 # Confirm hashes match
 # Install daemon binary
 # Clean up
