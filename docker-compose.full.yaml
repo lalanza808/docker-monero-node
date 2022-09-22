@@ -1,64 +1,76 @@
-version: '3'
+version: "3.7"
+
 volumes:
   grafana:
   prometheus:
-services:
+
+x-log-config: &log-config
+  logging:
+    driver: json-file
+    options:
+      max-size: "50m"
+      max-file: "20"
+
+services: 
   prometheus:
-    image: prom/prometheus:v2.18.0
-    container_name: prometheus
-    restart: unless-stopped
+    image: prom/prometheus:${PROM_TAG:-v2.36.0}
     command:
-      - --config.file=/etc/prometheus/prometheus.yml
+      - --config.file=/etc/prometheus/config.yaml
       - --storage.tsdb.path=/prometheus
-      - --web.console.libraries=/usr/share/prometheus/console_libraries
-      - --web.console.templates=/usr/share/prometheus/consoles
-      - --web.enable-admin-api
-    volumes:
-      - prometheus:/prometheus
-      - ./files/prometheus:/etc/prometheus
+      - --storage.tsdb.retention.time=360d
+    container_name: monerod_prometheus
+    restart: unless-stopped
     ports:
       - 127.0.0.1:9090:9090
+    volumes:
+      - prometheus:/prometheus
+      - ./files/prometheus/config.yaml:/etc/prometheus/config.yaml:ro
+    <<: *log-config
   grafana:
-    image: grafana/grafana:6.5.0
-    container_name: grafana
+    user: "1000"
+    command:
+      - -config=/etc/grafana/grafana.ini
+    container_name: monerod_grafana
     restart: unless-stopped
+    image: grafana/grafana:${GRAFANA_TAG:-8.5.4}
     ports:
       - 127.0.0.1:3000:3000
+    volumes:
+      - grafana:/var/lib/grafana
+      - ./files/grafana/grafana.ini:/etc/grafana/grafana.ini:ro
+      - ./files/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./files/grafana/dashboards:/var/lib/grafana/dashboards:ro
     environment:
       HOSTNAME: grafana
-      GF_SERVER_ROOT_URL: "${GRAFANA_URL}"
+      GF_SERVER_ROOT_URL: ${GRAFANA_URL}
       GF_ANALYTICS_REPORTING_ENABLED: "false"
       GF_ANALYTICS_CHECK_FOR_UPDATES: "false"
       GF_USERS_ALLOW_SIGN_UP: "false"
       GF_USERS_ALLOW_ORG_CREATE: "false"
+      GF_LOG_LEVEL: "debug"
       GF_AUTH_ANONYMOUS_ENABLED: "${GF_AUTH_ANONYMOUS_ENABLED:-true}"
       GF_AUTH_BASIC_ENABLED: "${GF_AUTH_BASIC_ENABLED:-false}"
       GF_AUTH_DISABLE_LOGIN_FORM: "${GF_AUTH_DISABLE_LOGIN_FORM:-true}"
       GF_SECURITY_ADMIN_PASSWORD: "${GF_SECURITY_ADMIN_PASSWORD}"
       GF_SECURITY_ADMIN_USER: "${GF_SECURITY_ADMIN_USER}"
-    volumes:
-      - ./files/grafana/dashboards.yaml:/etc/grafana/provisioning/dashboards/default.yaml:ro
-      - ./files/grafana/prometheus.yaml:/etc/grafana/provisioning/datasources/prometheus.yaml:ro
-      - ./files/grafana/daemon_metrics.json:/var/lib/grafana/dashboards/daemon_metrics.json:ro
-      - grafana:/var/lib/grafana
+    <<: *log-config
   exporter:
-    container_name: exporter
+    container_name: monerod_exporter
     build:
       context: dockerfiles
       dockerfile: monerod_exporter
     restart: unless-stopped
-    environment:
-      DAEMON_HOST: http://monerod:18083
-      PORT: 8080
     ports:
-      - 127.0.0.1:8080:8080
+      - 127.0.0.1:9000:9000
+    command:
+      - --monero-addr=http://monerod:${UNRESTRICTED_PORT:-18083}
+    <<: *log-config
   monerod:
     container_name: monerod
     build:
       context: dockerfiles
       dockerfile: monero_compile
-      args:
-        threads: ${THREADS:-1}
+      args: ${THREADS:-2}
     restart: unless-stopped
     volumes:
       - ${DATA_DIR:-./data}:/data
@@ -68,4 +80,5 @@ services:
       - 127.0.0.1:${ZMQ_PORT:-18082}:18082          # zmq
       - 127.0.0.1:${UNRESTRICTED_PORT:-18083}:18083 # unrestricted rpc
     command:
-      monerod --data-dir=/data --p2p-bind-ip=0.0.0.0 --p2p-bind-port=18080 --rpc-restricted-bind-ip=0.0.0.0 --rpc-restricted-bind-port=18081 --zmq-rpc-bind-ip=0.0.0.0 --zmq-rpc-bind-port=18082 --rpc-bind-ip=0.0.0.0 --rpc-bind-port=18083 --non-interactive --confirm-external-bind --public-node --log-level=0 --enable-dns-blocklist
+      monerod --data-dir=/data --p2p-bind-ip=0.0.0.0 --p2p-bind-port=18080 --rpc-restricted-bind-ip=0.0.0.0 --rpc-restricted-bind-port=18081 --zmq-rpc-bind-ip=0.0.0.0 --zmq-rpc-bind-port=18082 --rpc-bind-ip=0.0.0.0 --rpc-bind-port=18083 --non-interactive --confirm-external-bind --public-node --log-level=0 --enable-dns-blocklist --rpc-ssl=disabled
+    <<: *log-config

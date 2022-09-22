@@ -1,11 +1,9 @@
-FROM node:8
+FROM golang:bullseye
 
-WORKDIR /opt/monerod_exporter
+# Install exporter from Golang source
+RUN go install github.com/cirocosta/monero-exporter/cmd/monero-exporter@master
 
-RUN git clone https://github.com/lalanza808/monerod_exporter.git --branch=master --depth=1 .
+# Install GeoLite database
+RUN wget https://github.com/P3TERX/GeoLite.mmdb/raw/download/GeoLite2-City.mmdb -O /geoip.mmdb
 
-RUN npm install
-
-EXPOSE 8080
-
-ENTRYPOINT ["node", "index.js"]
+ENTRYPOINT [ "monero-exporter", "--geoip-filepath", "/geoip.mmdb" ]
