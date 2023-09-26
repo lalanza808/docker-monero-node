@@ -1,9 +1,10 @@
-FROM golang:bullseye
+FROM golang:bullseye as OG
 
-# Install exporter from Golang source
+# Install exporter from Github
 RUN go install github.com/cirocosta/monero-exporter/cmd/monero-exporter@master
 
-# Install GeoLite database
-RUN wget https://github.com/P3TERX/GeoLite.mmdb/raw/download/GeoLite2-City.mmdb -O /geoip.mmdb
+# Copy installed binary to fresh Ubuntu image
+FROM ubuntu:22.04
+COPY --from=OG /go/bin/monero-exporter /usr/local/bin/monero-exporter
 
-ENTRYPOINT [ "monero-exporter", "--geoip-filepath", "/geoip.mmdb" ]
+ENTRYPOINT [ "monero-exporter" ]
