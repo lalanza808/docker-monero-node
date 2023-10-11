@@ -17,11 +17,11 @@ services:
     command:
       - --config.file=/etc/prometheus/config.yaml
       - --storage.tsdb.path=/prometheus
-      - --storage.tsdb.retention.time=360d
+      - --storage.tsdb.retention.time=${PROM_RETENTION:-360d}
     container_name: monerod_prometheus
     restart: unless-stopped
-    ports:
-      - 127.0.0.1:9090:9090
+    # ports:
+    #   - 127.0.0.1:9090:9090
     volumes:
       - prometheus:/prometheus
       - ./files/prometheus/config.yaml:/etc/prometheus/config.yaml:ro
@@ -34,7 +34,7 @@ services:
     restart: unless-stopped
     image: grafana/grafana:${GRAFANA_TAG:-8.5.4}
     ports:
-      - 127.0.0.1:3000:3000
+      - 127.0.0.1:${GRAF_PORT:-3000}:3000
     volumes:
       - grafana:/var/lib/grafana
       - ./files/grafana/grafana.ini:/etc/grafana/grafana.ini:ro
@@ -60,8 +60,8 @@ services:
       context: dockerfiles
       dockerfile: monerod_exporter
     restart: unless-stopped
-    ports:
-      - 127.0.0.1:9000:9000
+    # ports:
+    #   - 127.0.0.1:9000:9000
     command:
       - --monero-addr=http://monerod:${UNRESTRICTED_PORT:-18083}
     <<: *log-config
