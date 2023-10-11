@@ -32,7 +32,7 @@ services:
       - -config=/etc/grafana/grafana.ini
     container_name: monerod_grafana
     restart: unless-stopped
-    image: grafana/grafana:${GRAFANA_TAG:-8.5.4}
+    image: grafana/grafana:${GRAFANA_TAG:-10.1.4}
     ports:
       - 127.0.0.1:${GRAF_PORT:-3000}:3000
     volumes:
@@ -58,12 +58,24 @@ services:
     container_name: monerod_exporter
     build:
       context: dockerfiles
-      dockerfile: monerod_exporter
+      dockerfile: exporter
     restart: unless-stopped
     # ports:
     #   - 127.0.0.1:9000:9000
     command:
       - --monero-addr=http://monerod:${UNRESTRICTED_PORT:-18083}
+    <<: *log-config
+  nodemapper:
+    container_name: monerod_nodemapper
+    restart: unless-stopped
+    build:
+      context: dockerfiles
+      dockerfile: nodemapper
+    environment:
+      NODE_HOST: monerod
+      NODE_PORT: 18083
+    # ports:
+    #   - 127.0.0.1:${MAPPER_PORT:-5000}:5000
     <<: *log-config
   monerod:
     container_name: monerod

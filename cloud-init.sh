@@ -21,7 +21,6 @@ chown -R debian-tor:debian-tor /run/tor
 chmod 700 -R /run/tor
 mkdir -p /var/www/tor
 cat << EOF > /etc/tor/torrc
-BridgeRelay 1
 ControlSocket /run/tor/control
 ControlSocketsGroupWritable 1
 CookieAuthentication 1
