@@ -69,7 +69,7 @@ services:
     container_name: monerod
     build:
       context: dockerfiles
-      dockerfile: monero_nocompile
+      dockerfile: monero
     restart: unless-stopped
     volumes:
       - ${DATA_DIR:-./data}:/data
