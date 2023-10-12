@@ -8,6 +8,6 @@ RUN .venv/bin/pip install flask==3.0.0
 RUN .venv/bin/pip install geoip2==4.7.0
 RUN wget https://github.com/P3TERX/GeoLite.mmdb/raw/download/GeoLite2-City.mmdb -qO ./geoip.mmdb
 
-COPY nodemapper.py app.py
+COPY dockerfiles/nodemapper.py app.py
 
 ENTRYPOINT [ ".venv/bin/flask", "--app", "app", "run", "--host", "0.0.0.0" ]

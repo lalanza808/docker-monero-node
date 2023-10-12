@@ -19,18 +19,18 @@ NODEMAPPER_BASE=${DH_USER}/nodemapper
 # build nodemapper
 docker build -t "${NODEMAPPER_BASE}:${NODEMAPPER_VERSION}" -f dockerfiles/nodemapper .
 docker tag "${NODEMAPPER_BASE}:${NODEMAPPER_VERSION}" "${NODEMAPPER_BASE}:latest"
-docker push "${NODEMAPPER_BASE}:${NODEMAPPER_VERSION}"
-docker push "${NODEMAPPER_BASE}:latest"
+# docker push "${NODEMAPPER_BASE}:${NODEMAPPER_VERSION}"
+# docker push "${NODEMAPPER_BASE}:latest"
 
 # build exporter
 docker build -t "${EXPORTER_BASE}:${EXPORTER_VERSION}" -f dockerfiles/exporter .
 docker tag "${EXPORTER_BASE}:${EXPORTER_VERSION}" "${EXPORTER_BASE}:latest"
-docker push "${EXPORTER_BASE}:${EXPORTER_VERSION}"
-docker push "${EXPORTER_BASE}:latest"
+# docker push "${EXPORTER_BASE}:${EXPORTER_VERSION}"
+# docker push "${EXPORTER_BASE}:latest"
 
 # build monerod
 
 docker build -t "${MONERO_BASE}:${MONERO_VERSION}" -f dockerfiles/nodemapper .
 docker tag "${MONERO_BASE}:${MONERO_VERSION}" "${MONERO_BASE}:latest"
-docker push "${MONERO_BASE}:${MONERO_VERSION}"
-docker push "${MONERO_BASE}:latest"
+# docker push "${MONERO_BASE}:${MONERO_VERSION}"
+# docker push "${MONERO_BASE}:latest"

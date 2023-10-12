@@ -57,8 +57,8 @@ services:
   exporter:
     container_name: monerod_exporter
     build:
-      context: dockerfiles
-      dockerfile: exporter
+      context: .
+      dockerfile: dockerfiles/exporter
     restart: unless-stopped
     # ports:
     #   - 127.0.0.1:9000:9000
@@ -69,8 +69,8 @@ services:
     container_name: monerod_nodemapper
     restart: unless-stopped
     build:
-      context: dockerfiles
-      dockerfile: nodemapper
+      context: .
+      dockerfile: dockerfiles/nodemapper
     environment:
       NODE_HOST: monerod
       NODE_PORT: 18083
@@ -80,8 +80,8 @@ services:
   monerod:
     container_name: monerod
     build:
-      context: dockerfiles
-      dockerfile: monero
+      context: .
+      dockerfile: dockerfiles/monero
     restart: unless-stopped
     volumes:
       - ${DATA_DIR:-./data}:/data
