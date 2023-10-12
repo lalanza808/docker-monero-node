@@ -14,6 +14,6 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - build_images:
+      - name: build_images
         run: |
           bash release.sh
