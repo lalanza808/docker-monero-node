@@ -2,7 +2,7 @@ name: publish images
 
 on:
   push:
-    branches: main
+    branches: master
 
 jobs:
   login:
