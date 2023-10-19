@@ -2,7 +2,7 @@
 
 Simple way to run a Monero node with some basic monitoring tools packaged in.
 
-Leverages [Prometheus](https://prometheus.io/docs/introduction/overview/), [Grafana](https://grafana.com/), and [monero-exporter](https://github.com/cirocosta/monero-exporter) on top of `monerod`.
+Leverages [Prometheus](https://prometheus.io/docs/introduction/overview/), [Grafana](https://grafana.com/), [nodemapper](./dockerfiles/nodemapper.py), and [monero-exporter](https://github.com/cirocosta/monero-exporter) on top of `monerod`.
 
 ## Setup
 
@@ -27,10 +27,11 @@ The following ports will be bound for `monerod` by default, but you can override
 - 18082   # zmq
 - 18083   # unrestricted rpc
 
-The following ports will be bound for other services:
+The following ports are commented out but can be enabled to test things locally:
 - 9090  # prometheus web ui
 - 3000  # grafana web ui
 - 9000  # exporter web api (/metrics)
+- 5000  # nodemapper web api (/metrics)
 
 You will want to open/allow ports 18080 and 18081 in your firewall for usage as a remote/public node (or whichever p2p and restricted ports you picked).
 
