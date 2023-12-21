@@ -37,13 +37,14 @@ def nodes():
         geo = get_geoip(host)
         geostr = 'geoip{{latitude="{lat}", longitude="{lon}", country_code="{country_code}", country_name="{country_name}", status="{status}"}} 1'
         if geostr not in peers:
-            peers.append(geostr.format(
-                lat=geo.location.latitude,
-                lon=geo.location.longitude,
-                country_code=geo.continent.code,
-                country_name=geo.continent.names['en'],
-                status=status
-            ))
+            if 'en' in geo.continent.names:
+                peers.append(geostr.format(
+                    lat=geo.location.latitude,
+                    lon=geo.location.longitude,
+                    country_code=geo.continent.code,
+                    country_name=geo.continent.names['en'],
+                    status=status
+                ))
     for peer in peer_list['gray_list']:
         if peer.get('host'):
             add_peer(peer['host'], 'gray')
