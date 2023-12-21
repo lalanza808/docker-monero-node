@@ -1,2 +1,5 @@
 data
 .env
+.venv
+__pycache__
+geoip.mmdb
