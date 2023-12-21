@@ -9,13 +9,13 @@ set -ex
 IMAGE=${1}
 DH_USER=lalanza808
 MONEROD_VERSION=v0.18.3.1
-MONEROD_EXPORTER=${DH_USER}/monerod
+MONEROD_BASE=${DH_USER}/monerod
 EXPORTER_VERSION=1.0.0
 EXPORTER_BASE=${DH_USER}/exporter
 NODEMAPPER_VERSION=1.0.1
 NODEMAPPER_BASE=${DH_USER}/nodemapper
 
-if [[ "${IMAGE}" -eq "nodemapper" ]]
+if [[ "${IMAGE}" == "nodemapper" ]]
 then
     echo -e "[+] Building nodemapper"
     docker build -t "${NODEMAPPER_BASE}:${NODEMAPPER_VERSION}" -f dockerfiles/nodemapper .
@@ -24,7 +24,7 @@ then
     docker push "${NODEMAPPER_BASE}:latest"
 fi
 
-if [[ "${IMAGE}" -eq "exporter" ]]
+if [[ "${IMAGE}" == "exporter" ]]
 then
     echo -e "[+] Building exporter"
     docker build -t "${EXPORTER_BASE}:${EXPORTER_VERSION}" -f dockerfiles/exporter .
@@ -33,7 +33,7 @@ then
     docker push "${EXPORTER_BASE}:latest"
 fi
 
-if [[ "${IMAGE}" -eq "monerod" ]]
+if [[ "${IMAGE}" == "monerod" ]]
 then
     echo -e "[+] Building monerod"
     docker build -t "${MONEROD_BASE}:${MONEROD_VERSION}" -f dockerfiles/monero .
