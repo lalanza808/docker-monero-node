@@ -1,13 +1,17 @@
-name: publish images
+name: Publish images to Docker Hub
 
 on:
   push:
     branches: master
 
+env:
+  DH_USER: lalanza808
+
 jobs:
   publish_images:
     runs-on: ubuntu-latest
-    name: Publish Docker images to Dockerhub
+    name: Publish selected Docker image to Dockerhub
+    if: contains(github.event.head_commit.message, 'release(.*)')
     steps:
       - name: Authenticate to Dockerhub
         uses: docker/login-action@v3
@@ -16,6 +20,15 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Build and push Docker images
-        run: |
-          bash release.sh
+      - name: Build and push new nodemapper image
+        if: contains(github.event.head_commit.message, 'release(nodemapper)')
+        run: bash release.sh nodemapper
+      - name: Build and push new monerod image
+        if: contains(github.event.head_commit.message, 'release(monerod)')
+        run: bash release.sh monerod
+      - name: Build and push new exporter image
+        if: contains(github.event.head_commit.message, 'release(exporter)')
+        run: bash release.sh exporter
+
+          
+          
