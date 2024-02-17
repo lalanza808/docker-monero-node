@@ -17,7 +17,7 @@ services:
     command:
       - --config.file=/etc/prometheus/config.yaml
       - --storage.tsdb.path=/prometheus
-      - --storage.tsdb.retention.time=360d
+      - --storage.tsdb.retention.time=${PROM_RETENTION:-360d}
     container_name: monerod_prometheus
     restart: unless-stopped
     ports:
@@ -32,7 +32,7 @@ services:
       - -config=/etc/grafana/grafana.ini
     container_name: monerod_grafana
     restart: unless-stopped
-    image: grafana/grafana:${GRAFANA_TAG:-8.5.4}
+    image: grafana/grafana:${GRAFANA_TAG:-10.1.4}
     ports:
       - 127.0.0.1:3000:3000
     volumes:
@@ -57,20 +57,31 @@ services:
   exporter:
     container_name: monerod_exporter
     build:
-      context: dockerfiles
-      dockerfile: monerod_exporter
+      context: .
+      dockerfile: dockerfiles/exporter
     restart: unless-stopped
     ports:
       - 127.0.0.1:9000:9000
     command:
       - --monero-addr=http://monerod:${UNRESTRICTED_PORT:-18083}
     <<: *log-config
+  nodemapper:
+    container_name: monerod_nodemapper
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: dockerfiles/nodemapper
+    environment:
+      NODE_HOST: monerod
+      NODE_PORT: 18083
+    ports:
+      - 127.0.0.1:${MAPPER_PORT:-5000}:5000
+    <<: *log-config
   monerod:
     container_name: monerod
     build:
       context: dockerfiles
       dockerfile: monero_compile
-      args: ${THREADS:-2}
     restart: unless-stopped
     volumes:
       - ${DATA_DIR:-./data}:/data
