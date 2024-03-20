@@ -10,4 +10,4 @@ RUN wget https://github.com/P3TERX/GeoLite.mmdb/raw/download/GeoLite2-City.mmdb 
 
 COPY dockerfiles/nodemapper.py app.py
 
-ENTRYPOINT [ ".venv/bin/flask", "--app", "app", "run", "--host", "0.0.0.0" ]
+ENTRYPOINT [ ".venv/bin/flask", "--app", "app", "run", "--host", "::" ]
