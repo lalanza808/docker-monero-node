@@ -1,7 +1,7 @@
 FROM ubuntu:22.04 as OG
 
-ENV MONERO_HASH 9dafd70230a7b3a73101b624f3b5f439cc5b84a19b12c17c24e6aab94b678cbb
-ENV MONERO_DL_URL https://downloads.getmonero.org/cli/monero-linux-x64-v0.18.3.2.tar.bz2
+ENV MONERO_HASH 47c7e6b4b88a57205800a2538065a7874174cd087eedc2526bee1ebcce0cc5e3
+ENV MONERO_DL_URL https://downloads.getmonero.org/cli/monero-linux-x64-v0.18.3.3.tar.bz2
 ENV MONERO_DL_FILE monero.tar.bz2
 ENV MONERO_SUMS_FILE sha256sums
 
