@@ -12,6 +12,7 @@ from os import environ as env
 
 import requests
 import geoip2.database
+from geoip2.errors import AddressNotFoundError
 from flask import Flask, make_response
 
 
@@ -24,8 +25,11 @@ NODE_PORT = env.get('NODE_PORT', 18083)
 
 def get_geoip(ip):
     """Takes an IP address and determines GeoIP data"""
-    with geoip2.database.Reader("./geoip.mmdb") as reader:
-        return reader.city(ip)
+    try:
+        with geoip2.database.Reader("./geoip.mmdb") as reader:
+            return reader.city(ip)
+    except AddressNotFoundError:
+        return None
 
 
 @app.route("/metrics")
@@ -35,6 +39,9 @@ def nodes():
     peer_list = requests.get(f'http://{NODE_HOST}:{NODE_PORT}/get_peer_list').json()
     def add_peer(host, status):
         geo = get_geoip(host)
+        if geo is None:
+            return
+
         geostr = 'geoip{{latitude="{lat}", longitude="{lon}", country_code="{country_code}", country_name="{country_name}", status="{status}"}} 1'
         if geostr not in peers:
             if 'en' in geo.continent.names:
