@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Build and tag container images for each service based upon passed argument; monerod, nodemapper, or exporter 
+# Build and tag container images for each service based upon passed argument; monerod, nodemapper, or exporter
 # All are manually tagged since some do not update as frequently as others. Bump the script
 # to bump the image stored on Dockerhub.
 
@@ -12,7 +12,7 @@ MONEROD_VERSION=v0.18.3.2
 MONEROD_BASE=${DH_USER}/monerod
 EXPORTER_VERSION=1.0.0
 EXPORTER_BASE=${DH_USER}/exporter
-NODEMAPPER_VERSION=1.0.1
+NODEMAPPER_VERSION=1.0.2
 NODEMAPPER_BASE=${DH_USER}/nodemapper
 
 if [[ "${IMAGE}" == "nodemapper" ]]
