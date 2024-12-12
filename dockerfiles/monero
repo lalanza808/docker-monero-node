@@ -8,10 +8,13 @@ ENV MONERO_SUMS_FILE sha256sums
 WORKDIR /opt/monero
 
 # Update system and install dependencies
+# Download ban list
 # Download Monero binaries from getmonero.org
 # Confirm hashes match
 # Install daemon binary
 # Clean up
+
+RUN wget -qO /ban_list.txt "https://raw.githubusercontent.com/Boog900/monero-ban-list/main/ban_list.txt"
 
 RUN apt-get update \
   && apt-get upgrade -y \
@@ -37,6 +40,7 @@ WORKDIR /data
 # Copy to fresh Ubuntu image to reduce size
 FROM ubuntu:22.04
 COPY --from=OG /usr/local/bin/monerod /usr/local/bin/monerod
+COPY --from=OG /ban_list.txt /ban_list.txt
 
 EXPOSE 18080
 EXPOSE 18081
