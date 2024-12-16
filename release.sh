@@ -8,8 +8,8 @@ set -ex
 
 IMAGE=${1}
 DH_USER=lalanza808
-MONEROD_VERSION=v0.18.3.2
-MONEROD_BASE=${DH_USER}/monerod
+MONERO_VERSION=v0.18.3.4
+MONERO_BASE=${DH_USER}/monero
 EXPORTER_VERSION=1.0.0
 EXPORTER_BASE=${DH_USER}/exporter
 NODEMAPPER_VERSION=1.0.2
@@ -33,11 +33,11 @@ then
     docker push "${EXPORTER_BASE}:latest"
 fi
 
-if [[ "${IMAGE}" == "monerod" ]]
+if [[ "${IMAGE}" == "monero" ]]
 then
-    echo -e "[+] Building monerod"
-    docker build -t "${MONEROD_BASE}:${MONEROD_VERSION}" -f dockerfiles/monero .
-    docker tag "${MONEROD_BASE}:${MONEROD_VERSION}" "${MONEROD_BASE}:latest"
-    docker push "${MONEROD_BASE}:${MONEROD_VERSION}"
-    docker push "${MONEROD_BASE}:latest"
+    echo -e "[+] Building monero"
+    docker build -t "${MONERO_BASE}:${MONERO_VERSION}" -f dockerfiles/monero .
+    docker tag "${MONERO_BASE}:${MONERO_VERSION}" "${MONERO_BASE}:latest"
+    docker push "${MONERO_BASE}:${MONERO_VERSION}"
+    docker push "${MONERO_BASE}:latest"
 fi
