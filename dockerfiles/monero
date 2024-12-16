@@ -40,6 +40,8 @@ WORKDIR /data
 # Copy to fresh Ubuntu image to reduce size
 FROM ubuntu:22.04
 COPY --from=OG /usr/local/bin/monerod /usr/local/bin/monerod
+COPY --from=OG /usr/local/bin/monero-wallet-cli /usr/local/bin/monero-wallet-cli
+COPY --from=OG /usr/local/bin/monero-wallet-rpc /usr/local/bin/monero-wallet-rpc
 COPY --from=OG /ban_list.txt /ban_list.txt
 
 EXPOSE 18080
