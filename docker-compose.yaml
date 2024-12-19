@@ -18,6 +18,9 @@ services:
       - --storage.tsdb.retention.time=${PROM_RETENTION:-360d}
     container_name: monerod_prometheus
     restart: unless-stopped
+    depends_on:
+      exporter:
+        condition: service_started
     # ports:
     #   - 127.0.0.1:9090:9090
     volumes:
@@ -58,6 +61,9 @@ services:
       context: .
       dockerfile: dockerfiles/exporter
     restart: unless-stopped
+    depends_on:
+      monerod:
+        condition: service_started
     # ports:
     #   - 127.0.0.1:9000:9000
     command:
@@ -69,6 +75,9 @@ services:
     build:
       context: .
       dockerfile: dockerfiles/nodemapper
+    depends_on:
+      monerod:
+        condition: service_started
     environment:
       NODE_HOST: monerod
       NODE_PORT: 18083
@@ -111,4 +120,6 @@ services:
       - ${RESTRICTED_PORT:-18081}:18081             # restricted rpc
       - 127.0.0.1:${ZMQ_PORT:-18082}:18082          # zmq
       - 127.0.0.1:${UNRESTRICTED_PORT:-18083}:18083 # unrestricted rpc
+    command:
+      /entrypoint.sh
     <<: *log-config
