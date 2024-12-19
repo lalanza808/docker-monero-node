@@ -1,5 +1,3 @@
-version: "3.7"
-
 volumes:
   grafana:
   prometheus:
@@ -11,7 +9,7 @@ x-log-config: &log-config
       max-size: "50m"
       max-file: "20"
 
-services: 
+services:
   prometheus:
     image: prom/prometheus:${PROM_TAG:-v2.36.0}
     command:
@@ -77,12 +75,35 @@ services:
     # ports:
     #   - 127.0.0.1:${MAPPER_PORT:-5000}:5000
     <<: *log-config
+  tor:
+    container_name: monerod_tor
+    build:
+      context: .
+      dockerfile: dockerfiles/tor
+    restart: unless-stopped
+    # ports:
+      # - 127.0.0.1:9050:9050
+    <<: *log-config
+  i2p:
+    container_name: monerod_i2p
+    build:
+      context: .
+      dockerfile: dockerfiles/i2p
+    restart: unless-stopped
+    # ports:
+        # - 127.0.0.1:4444:4444
+    <<: *log-config
   monerod:
     container_name: monerod
     build:
       context: .
       dockerfile: dockerfiles/monero
     restart: unless-stopped
+    depends_on:
+      tor:
+        condition: service_started
+      i2p:
+        condition: service_started
     volumes:
       - ${DATA_DIR:-./data}:/data
     ports:
@@ -90,6 +111,4 @@ services:
       - ${RESTRICTED_PORT:-18081}:18081             # restricted rpc
       - 127.0.0.1:${ZMQ_PORT:-18082}:18082          # zmq
       - 127.0.0.1:${UNRESTRICTED_PORT:-18083}:18083 # unrestricted rpc
-    command:
-      monerod --data-dir=/data --p2p-bind-ip=0.0.0.0 --p2p-bind-port=18080 --rpc-restricted-bind-ip=0.0.0.0 --rpc-restricted-bind-port=18081 --zmq-rpc-bind-ip=0.0.0.0 --zmq-rpc-bind-port=18082 --rpc-bind-ip=0.0.0.0 --rpc-bind-port=18083 --non-interactive --confirm-external-bind --public-node --log-level=0 --enable-dns-blocklist --rpc-ssl=disabled --ban-list=/ban_list.txt
     <<: *log-config
