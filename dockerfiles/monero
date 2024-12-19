@@ -51,8 +51,6 @@ COPY --from=og /tmp/q /usr/local/bin/q
 COPY dockerfiles/monero-entrypoint.sh /entrypoint.sh
 RUN chmod 755 /entrypoint.sh
 
-CMD "/entrypoint.sh"
-
 EXPOSE 18080
 EXPOSE 18081
 EXPOSE 18082
