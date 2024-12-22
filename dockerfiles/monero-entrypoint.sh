@@ -19,7 +19,6 @@ monerod \
     --confirm-external-bind \
     --public-node \
     --log-level=0 \
-    --enable-dns-blocklist \
     --rpc-ssl=disabled \
     --ban-list=/ban_list.txt \
     --tx-proxy=tor,$TOR_HOST:9050,disable_noise,24 \
