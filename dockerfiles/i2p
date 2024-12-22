@@ -6,7 +6,7 @@ RUN apt-get update && \
     apt-get install wget sudo -y
 
 WORKDIR /tmp/i2p
-RUN wget https://github.com/PurpleI2P/i2pd/releases/download/2.47.0/i2pd_2.47.0-1jammy1_amd64.deb -O i2pd.deb -q
+RUN wget https://github.com/PurpleI2P/i2pd/releases/download/2.54.0/i2pd_2.54.0-1jammy1_amd64.deb -O i2pd.deb -q
 RUN apt install ./i2pd.deb -y
 
 RUN rm -rf /tmp/i2p
