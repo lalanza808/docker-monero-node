@@ -22,6 +22,6 @@ monerod \
     --enable-dns-blocklist \
     --rpc-ssl=disabled \
     --ban-list=/ban_list.txt \
-    --tx-proxy=tor,$TOR_HOST:9050 \
-    --tx-proxy=i2p,$I2P_HOST:4444
+    --tx-proxy=tor,$TOR_HOST:9050,disable_noise,24 \
+    --tx-proxy=i2p,$I2P_HOST:4447,disable_noise,24
 
