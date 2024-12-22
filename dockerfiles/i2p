@@ -22,5 +22,5 @@ RUN adduser \
    i2p
 COPY dockerfiles/i2p-entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
-EXPOSE 4444
+EXPOSE 4447
 CMD /entrypoint.sh
