@@ -4,12 +4,11 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update && \
     apt-get install wget sudo -y
-
-WORKDIR /tmp/i2p
 RUN wget https://github.com/PurpleI2P/i2pd/releases/download/2.54.0/i2pd_2.54.0-1jammy1_amd64.deb -O i2pd.deb -q
 RUN apt install ./i2pd.deb -y
-
-RUN rm -rf /tmp/i2p
+RUN rm -rf i2p.deb && \
+    apt clean all && \
+    apt autoremove -y
 
 RUN adduser \
    --system \
@@ -20,7 +19,11 @@ RUN adduser \
    --home /home/i2p \
    --uid 1000 \
    i2p
-COPY dockerfiles/i2p-entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+
+COPY dockerfiles/i2p-config /i2p-config
+
+USER i2p
+
 EXPOSE 4447
-CMD /entrypoint.sh
+
+ENTRYPOINT ["i2pd", "--conf", "/i2p-config"]
