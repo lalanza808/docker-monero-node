@@ -1,8 +1,3 @@
-ControlSocket /run/tor/control
-ControlSocketsGroupWritable 1
-CookieAuthentication 1
-CookieAuthFileGroupReadable 1
-CookieAuthFile /run/tor/control.authcookie
 DataDirectory /var/lib/tor
 ExitPolicy reject6 *:*, reject *:*
 ExitRelay 0
