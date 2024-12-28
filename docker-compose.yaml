@@ -9,6 +9,13 @@ x-log-config: &log-config
       max-size: "50m"
       max-file: "20"
 
+networks:
+  tor_net:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.31.255.0/24"
+
 services:
   prometheus:
     image: prom/prometheus:${PROM_TAG:-v2.36.0}
@@ -26,6 +33,8 @@ services:
     volumes:
       - prometheus:/prometheus
       - ./files/prometheus/config.yaml:/etc/prometheus/config.yaml:ro
+    networks:
+      - tor_net
     <<: *log-config
   grafana:
     user: "1000"
@@ -54,6 +63,8 @@ services:
       GF_AUTH_DISABLE_LOGIN_FORM: "${GF_AUTH_DISABLE_LOGIN_FORM:-true}"
       GF_SECURITY_ADMIN_PASSWORD: "${GF_SECURITY_ADMIN_PASSWORD}"
       GF_SECURITY_ADMIN_USER: "${GF_SECURITY_ADMIN_USER}"
+    networks:
+      - tor_net
     <<: *log-config
   exporter:
     container_name: monerod_exporter
@@ -68,6 +79,8 @@ services:
     #   - 127.0.0.1:9000:9000
     command:
       - --monero-addr=http://monerod:${UNRESTRICTED_PORT:-18083}
+    networks:
+      - tor_net
     <<: *log-config
   nodemapper:
     container_name: monerod_nodemapper
@@ -83,6 +96,8 @@ services:
       NODE_PORT: 18083
     # ports:
     #   - 127.0.0.1:${MAPPER_PORT:-5000}:5000
+    networks:
+      - tor_net
     <<: *log-config
   tor:
     container_name: monerod_tor
@@ -92,6 +107,9 @@ services:
     restart: unless-stopped
     # ports:
       # - 127.0.0.1:9050:9050
+    networks:
+      tor_net:
+        ipv4_address: 172.31.255.254
     <<: *log-config
   i2p:
     container_name: monerod_i2p
@@ -101,6 +119,9 @@ services:
     restart: unless-stopped
     # ports:
         # - 127.0.0.1:4444:4444
+    networks:
+      tor_net:
+        ipv4_address: 172.31.255.255
     <<: *log-config
   monerod:
     container_name: monerod
@@ -121,5 +142,24 @@ services:
       - 127.0.0.1:${ZMQ_PORT:-18082}:18082          # zmq
       - 127.0.0.1:${UNRESTRICTED_PORT:-18083}:18083 # unrestricted rpc
     command:
-      /entrypoint.sh
+      - monerod
+      - --data-dir=/data
+      - --p2p-bind-ip=0.0.0.0
+      - --p2p-bind-port=18080
+      - --rpc-restricted-bind-ip=0.0.0.0
+      - --rpc-restricted-bind-port=18081
+      - --zmq-rpc-bind-ip=0.0.0.0
+      - --zmq-rpc-bind-port=18082
+      - --rpc-bind-ip=0.0.0.0
+      - --rpc-bind-port=18083
+      - --non-interactive
+      - --confirm-external-bind
+      - --public-node
+      - --log-level=0
+      - --rpc-ssl=disabled
+      - --ban-list=/ban_list.txt
+      - --tx-proxy=tor,172.31.255.254:9050,disable_noise,24
+      - --tx-proxy=i2p,172.31.255.255:4447,disable_noise,24
+    networks:
+      - tor_net
     <<: *log-config

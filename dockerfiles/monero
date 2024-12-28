@@ -34,22 +34,12 @@ RUN wget -qO ${MONERO_DL_FILE} ${MONERO_DL_URL} \
 # Download ban list
 RUN wget -qO /tmp/ban_list.txt "https://raw.githubusercontent.com/Boog900/monero-ban-list/main/ban_list.txt"
 
-# Download DNS client
-RUN wget -qO q.tar.gz "https://github.com/natesales/q/releases/download/v0.19.2/q_0.19.2_linux_amd64.tar.gz" \
-  && tar xzvf q.tar.gz \
-  && mv q /tmp/q \
-  && rm *.tar.gz
-
 # Copy to fresh Ubuntu image to reduce size
 FROM ubuntu:22.04
 COPY --from=og /usr/local/bin/monerod /usr/local/bin/monerod
 COPY --from=og /usr/local/bin/monero-wallet-cli /usr/local/bin/monero-wallet-cli
 COPY --from=og /usr/local/bin/monero-wallet-rpc /usr/local/bin/monero-wallet-rpc
 COPY --from=og /tmp/ban_list.txt /ban_list.txt
-COPY --from=og /tmp/q /usr/local/bin/q
-
-COPY dockerfiles/monero-entrypoint.sh /entrypoint.sh
-RUN chmod 755 /entrypoint.sh
 
 EXPOSE 18080
 EXPOSE 18081
