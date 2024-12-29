@@ -46,7 +46,7 @@ It's fairly simple, use `docker-compose` to bring the containers up and down and
 docker-compose up -d            # make up
 
 # Check all logs
-docker-compose logs -f  
+docker-compose logs -f
 
 # Check monerod logs
 docker-compose logs -f monerod  # make logs
@@ -65,3 +65,4 @@ Then navigate to http://localhost:3000. Here is what the graph looks like:
 ![](static/graf1.png)
 
 ![](static/graf2.png)
+
