@@ -1,21 +1,27 @@
-FROM ubuntu:22.04 as og
+FROM ubuntu:22.04 AS og
 
 ENV DEBIAN_FRONTEND noninteractive
-ARG threads
+ENV MONERO_RELEASE v0.18.3.4
 
 WORKDIR /opt/monero
 
+# Install dependencies
 RUN apt-get update && apt-get install -y \
     build-essential cmake pkg-config libboost-all-dev \
-    libssl-dev libzmq3-dev libunbound-dev libsodium-dev libpgm-dev git
+    libssl-dev libzmq3-dev libunbound-dev libsodium-dev libpgm-dev git wget
 
-RUN git clone https://github.com/monero-project/monero --branch=v0.18.3.4 --depth=1 .
+# Clone monero repo
+RUN git clone https://github.com/monero-project/monero --branch=$MONERO_RELEASE --depth=1 .
 
+# Clone submodules
 RUN git submodule update --init --force
 
-RUN make -j$threads
+# Compile monero
+ARG THREADS 2
+RUN make -j$THREADS
 
-RUN wget -qO /ban_list.txt "https://raw.githubusercontent.com/Boog900/monero-ban-list/main/ban_list.txt"
+# Download ban list
+RUN wget -qO /tmp/ban_list.txt "https://raw.githubusercontent.com/Boog900/monero-ban-list/main/ban_list.txt"
 
 FROM ubuntu:22.04
 
@@ -25,7 +31,7 @@ COPY --from=og /usr/lib/x86_64-linux-gnu/ /usr/lib/x86_64-linux-gnu/
 COPY --from=og /opt/monero/build/Linux/_no_branch_/release/bin/monerod /bin/monerod
 COPY --from=og /opt/monero/build/Linux/_no_branch_/release/bin/monero-wallet-cli /bin/monero-wallet-cli
 COPY --from=og /opt/monero/build/Linux/_no_branch_/release/bin/monero-wallet-rpc /bin/monero-wallet-rpc
-COPY --from=og /ban_list.txt /ban_list.txt
+COPY --from=og /tmp/ban_list.txt /ban_list.txt
 
 EXPOSE 18080
 EXPOSE 18081

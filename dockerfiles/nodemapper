@@ -6,8 +6,9 @@ RUN apt update && apt install wget python3 python3-venv -y
 RUN python3 -m venv .venv
 RUN .venv/bin/pip install flask==3.0.0
 RUN .venv/bin/pip install geoip2==4.7.0
+RUN .venv/bin/pip install gunicorn==23.0.0
 RUN wget https://github.com/P3TERX/GeoLite.mmdb/raw/download/GeoLite2-City.mmdb -qO ./geoip.mmdb
 
 COPY dockerfiles/nodemapper.py app.py
 
-ENTRYPOINT [ ".venv/bin/flask", "--app", "app", "run", "--host", "::" ]
+ENTRYPOINT [ ".venv/bin/gunicorn", "-b", "0.0.0.0:5000", "app:app" ]
