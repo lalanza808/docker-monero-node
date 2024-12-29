@@ -1,11 +1,15 @@
 datadir = /var/lib/i2pd
 log = false
 loglevel = none
-socksproxy.enabled = true
-socksproxy.address = 0.0.0.0
-socksproxy.port = 4447
-httpproxy.enabled = true
-httpproxy.address = 0.0.0.0
-httpproxy.port = 4444
 ipv6 = false
 bandwidth = 2048
+
+[socksproxy]
+enabled = true
+address = 0.0.0.0
+port = 4447
+
+[httpproxy]
+enabled = true
+address = 0.0.0.0
+port = 4444

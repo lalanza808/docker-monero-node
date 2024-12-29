@@ -130,11 +130,6 @@ services:
       context: .
       dockerfile: dockerfiles/monero
     restart: unless-stopped
-    depends_on:
-      tor:
-        condition: service_started
-      i2p:
-        condition: service_started
     volumes:
       - ${DATA_DIR:-./data}:/data
     ports:
