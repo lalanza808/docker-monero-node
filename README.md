@@ -1,8 +1,14 @@
 # docker-monero-node
 
-Simple way to run a Monero node with some basic monitoring tools packaged in.
+Simple way to run a Monero node with some monitoring and anonymity tools packaged in:
 
-Leverages [Prometheus](https://prometheus.io/docs/introduction/overview/), [Grafana](https://grafana.com/), [nodemapper](./dockerfiles/nodemapper.py), and [monero-exporter](https://github.com/cirocosta/monero-exporter) on top of `monerod`.
+* [monero-exporter](https://github.com/cirocosta/monero-exporter) - exposes metrics of the daemon
+* [nodemapper](./dockerfiles/nodemapper.py) - gathers GeoIP data for peers
+* [Prometheus](https://prometheus.io/docs/introduction/overview/) - monitors the exporter
+* [Grafana](https://grafana.com/) - shows visualizations and dashboards
+* [tor](https://www.torproject.org/) - provides tx relays over tor proxy
+* [i2pd](https://i2pd.website/) - provides tx relays over i2p proxy
+
 
 ## Setup
 
@@ -19,6 +25,9 @@ vim .env
 
 # Build containers
 docker-compose build  # make build
+
+# Run containers
+docker-compose up -d  # make up
 ```
 
 The following ports will be bound for `monerod` by default, but you can override in `.env`:
@@ -32,10 +41,15 @@ The following ports are commented out but can be enabled to test things locally:
 - 3000  # grafana web ui
 - 9000  # exporter web api (/metrics)
 - 5000  # nodemapper web api (/metrics)
+- 9050  # tor proxy
+- 4444  # i2p http proxy
+- 4447  # i2p socks proxy
+
+There are two hard-coded IP addresses for the tor and i2p proxies (monerod requires an IP address for setting the `--tx-proxy` flag.) You will need to modify your compose file if you need to adjust them.
 
 You will want to open/allow ports 18080 and 18081 in your firewall for usage as a remote/public node (or whichever p2p and restricted ports you picked).
 
-Also, you may want to setup a reverse proxy to Grafana if you would like to expose the visualizations for the world to see. Be sure to lock down the administrative settings or leave login disabled!
+Also, you may want to setup a reverse proxy to Grafana if you would like to expose the visualizations for the world to see. Be sure to lock down the administrative settings or leave login disabled! You can find a live example on my node here: https://singapore.node.xmr.pm
 
 ## Usage
 
