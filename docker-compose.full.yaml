@@ -159,6 +159,7 @@ services:
       - --public-node
       - --log-level=0
       - --rpc-ssl=disabled
+      - --proxy=172.31.255.250:9050
       - --ban-list=/ban_list.txt
       - --tx-proxy=tor,172.31.255.250:9050,disable_noise,24
       - --tx-proxy=i2p,172.31.255.251:4447,disable_noise,24
