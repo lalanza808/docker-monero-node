@@ -30,7 +30,7 @@ docker-compose build  # make build
 docker-compose up -d  # make up
 
 # See .onion hidden service address
-docker logs tor
+docker logs monerod_tor
 ```
 
 The following ports will be bound for `monerod` by default, but you can override in `.env`:
