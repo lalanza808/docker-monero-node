@@ -1,3 +1,5 @@
+#! /bin/sh
+
 tor &
 
 # Wait for onion address to be generated
