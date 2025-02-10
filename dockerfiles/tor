@@ -8,7 +8,7 @@ RUN mkdir -p /var/lib/tor/monerod \
 
 COPY dockerfiles/tor-config /etc/tor/torrc
 
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY ./dockerfiles/torentrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 USER debian-tor
