@@ -6,7 +6,7 @@ Simple way to run a Monero node with some monitoring and anonymity tools package
 * [nodemapper](./dockerfiles/nodemapper.py) - gathers GeoIP data for peers
 * [Prometheus](https://prometheus.io/docs/introduction/overview/) - monitors the exporter
 * [Grafana](https://grafana.com/) - shows visualizations and dashboards
-* [tor](https://www.torproject.org/) - provides tx relays over tor proxy
+* [tor](https://www.torproject.org/) - provides tx relays over tor proxy and a hidden service for wallets to connect to
 * [i2pd](https://i2pd.website/) - provides tx relays over i2p proxy
 
 
@@ -28,6 +28,9 @@ docker-compose build  # make build
 
 # Run containers
 docker-compose up -d  # make up
+
+# See .onion hidden service address
+docker logs tor
 ```
 
 The following ports will be bound for `monerod` by default, but you can override in `.env`:
