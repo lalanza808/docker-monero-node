@@ -2,16 +2,12 @@ FROM ubuntu:22.04
 
 RUN apt-get update && apt-get install tor -y
 
-RUN mkdir -p /var/lib/tor/monerod \
-  && chown -R debian-tor:debian-tor /var/lib/tor/monerod \
-  && chmod 700 -R /var/lib/tor/monerod
+RUN mkdir -p /var/lib/tor/monerod
 
 COPY dockerfiles/tor-config /etc/tor/torrc
 
 COPY ./dockerfiles/torentrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
-
-USER debian-tor
 
 EXPOSE 9050
 

@@ -1,5 +1,8 @@
 #! /bin/sh
 
+chown -R root:root /var/lib/tor/
+chmod 700 -R /var/lib/tor/monerod
+
 tor &
 
 # Wait for onion address to be generated

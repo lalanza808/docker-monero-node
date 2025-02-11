@@ -105,6 +105,8 @@ services:
       context: .
       dockerfile: dockerfiles/tor
     restart: unless-stopped
+    volumes:
+      - ./TorHiddenService:/var/lib/tor/monerod
     # ports:
       # - 127.0.0.1:9050:9050
     networks:
