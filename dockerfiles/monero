@@ -1,7 +1,5 @@
 FROM ubuntu:22.04 AS og
 
-FROM ubuntu:22.04 AS og
-
 # Define the Monero version
 ENV MONERO_VERSION=0.18.3.4
 
