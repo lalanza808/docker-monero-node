@@ -1,4 +1,4 @@
-FROM golang:bullseye as OG
+FROM golang:bullseye AS OG
 
 # Install exporter from Github
 RUN go install github.com/cirocosta/monero-exporter/cmd/monero-exporter@master
