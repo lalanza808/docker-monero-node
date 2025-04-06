@@ -20,7 +20,7 @@ NODEMAPPER_VERSION=1.0.3
 NODEMAPPER_BASE=${DH_USER}/nodemapper
 TOR_VERSION=1.0.0
 TOR_BASE=${DH_USER}/tor
-I2P_VERSION=$(sed -n 's/^FROM ubuntu:\(.*\) *$/\1/p' dockerfiles/i2p)
+I2P_VERSION=1.0.0
 I2P_BASE=${DH_USER}/i2p
 
 if [[ "${IMAGE}" == "nodemapper" ]]; then
