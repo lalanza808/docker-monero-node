@@ -8,27 +8,117 @@ env:
   DH_USER: lalanza808
 
 jobs:
-  publish_images:
+  nodemapper:
+    name: Publish nodemapper image
     runs-on: ubuntu-latest
-    name: Publish selected Docker image to Dockerhub
-    if: contains(github.event.head_commit.message, 'release(')
+    if: contains(github.event.head_commit.message, 'release(nodemapper)')
     steps:
       - name: Authenticate to Dockerhub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Build and push new nodemapper image
-        if: contains(github.event.head_commit.message, 'release(nodemapper)')
-        run: bash release.sh nodemapper
-      - name: Build and push new monerod image
-        if: contains(github.event.head_commit.message, 'release(monerod)')
-        run: bash release.sh monerod
-      - name: Build and push new exporter image
-        if: contains(github.event.head_commit.message, 'release(exporter)')
-        run: bash release.sh exporter
 
-          
-          
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build and push nodemapper image
+        run: bash release.sh nodemapper ${{ env.DH_USER }}
+
+  monero:
+    name: Publish monero image
+    runs-on: ubuntu-latest
+    if: contains(github.event.head_commit.message, 'release(monero)')
+    steps:
+      - name: Authenticate to Dockerhub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build and push monero image
+        run: bash release.sh monero ${{ env.DH_USER }}
+
+  exporter:
+    name: Publish exporter image
+    runs-on: ubuntu-latest
+    if: contains(github.event.head_commit.message, 'release(exporter)')
+    steps:
+      - name: Authenticate to Dockerhub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build and push exporter image
+        run: bash release.sh exporter ${{ env.DH_USER }}
+
+  tor:
+    name: Publish tor image
+    runs-on: ubuntu-latest
+    if: contains(github.event.head_commit.message, 'release(tor)')
+    steps:
+      - name: Authenticate to Dockerhub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build and push tor image
+        run: bash release.sh tor ${{ env.DH_USER }}
+
+  i2p:
+    name: Publish i2p image
+    runs-on: ubuntu-latest
+    if: contains(github.event.head_commit.message, 'release(i2p)')
+    steps:
+      - name: Authenticate to Dockerhub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build and push i2p image
+        run: bash release.sh i2p ${{ env.DH_USER }}
