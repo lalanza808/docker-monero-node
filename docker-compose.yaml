@@ -68,9 +68,10 @@ services:
     <<: *log-config
   exporter:
     container_name: monerod_exporter
-    build:
-      context: .
-      dockerfile: dockerfiles/exporter
+    image: lalanza808/exporter:1.0.0
+    # build:
+    #   context: .
+    #   dockerfile: dockerfiles/exporter
     restart: unless-stopped
     depends_on:
       monerod:
@@ -84,10 +85,11 @@ services:
     <<: *log-config
   nodemapper:
     container_name: monerod_nodemapper
+    image: lalanza808/nodemapper:1.0.4
     restart: unless-stopped
-    build:
-      context: .
-      dockerfile: dockerfiles/nodemapper
+    # build:
+    #   context: .
+    #   dockerfile: dockerfiles/nodemapper
     depends_on:
       monerod:
         condition: service_started
@@ -101,9 +103,10 @@ services:
     <<: *log-config
   tor:
     container_name: monerod_tor
-    build:
-      context: .
-      dockerfile: dockerfiles/tor
+    image: lalanza808/tor:1.0.0
+    # build:
+    #   context: .
+    #   dockerfile: dockerfiles/tor
     restart: unless-stopped
     # ports:
       # - 127.0.0.1:9050:9050
@@ -113,9 +116,10 @@ services:
     <<: *log-config
   i2p:
     container_name: monerod_i2p
-    build:
-      context: .
-      dockerfile: dockerfiles/i2p
+    image: lalanza808/i2p:1.0.0
+    # build:
+    #   context: .
+    #   dockerfile: dockerfiles/i2p
     restart: unless-stopped
     # ports:
     #     - 127.0.0.1:4447:4447
@@ -126,9 +130,10 @@ services:
     <<: *log-config
   monerod:
     container_name: monerod
-    build:
-      context: .
-      dockerfile: dockerfiles/monero
+    image: lalanza808/monero:v0.18.4.0
+    # build:
+    #   context: .
+    #   dockerfile: dockerfiles/monero
     restart: unless-stopped
     volumes:
       - ${DATA_DIR:-./data}:/data
