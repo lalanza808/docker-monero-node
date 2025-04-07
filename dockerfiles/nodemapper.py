@@ -42,14 +42,15 @@ def generate_prometheus_line(ip, status) -> Union[str, None]:
     if geo is None or 'en' not in geo.continent.names:
         return None
 
-    geostr = 'geoip{{latitude="{lat}", longitude="{lon}", country_code="{country_code}", country_name="{country_name}", status="{status}"}} 1'
+    geostr = 'geoip{{latitude="{lat}", longitude="{lon}", country_code="{country_code}", country_name="{country_name}", status="{status}", ip="{ip}"}} 1'
     # print(f"Found GeoIP for {ip}: {geostr}")
     return geostr.format(
         lat=geo.location.latitude,
         lon=geo.location.longitude,
         country_code=geo.continent.code,
         country_name=geo.continent.names['en'],
-        status=status
+        status=status,
+        ip=ip
     )
 
 @app.route("/metrics")
