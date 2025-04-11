@@ -68,6 +68,7 @@ services:
     <<: *log-config
   exporter:
     container_name: monerod_exporter
+    image: lalanza808/exporter:1.0.0
     build:
       context: .
       dockerfile: dockerfiles/exporter
@@ -84,6 +85,7 @@ services:
     <<: *log-config
   nodemapper:
     container_name: monerod_nodemapper
+    image: lalanza808/nodemapper:1.0.4
     restart: unless-stopped
     build:
       context: .
@@ -101,6 +103,7 @@ services:
     <<: *log-config
   tor:
     container_name: monerod_tor
+    image: lalanza808/tor:1.0.0
     build:
       context: .
       dockerfile: dockerfiles/tor
@@ -113,6 +116,7 @@ services:
     <<: *log-config
   i2p:
     container_name: monerod_i2p
+    image: lalanza808/i2p:1.0.0
     build:
       context: .
       dockerfile: dockerfiles/i2p
@@ -126,6 +130,7 @@ services:
     <<: *log-config
   monerod:
     container_name: monerod
+    image: lalanza808/monero:v0.18.4.0
     build:
       context: .
       dockerfile: dockerfiles/monero
