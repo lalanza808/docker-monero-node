@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Dynamically determine onion address to serve monerod on tor network
+
 while [ ! -f /var/lib/tor/monerod/hostname ]; do
     echo -e "[+] Waiting for onion address to be generated"
     sleep 1
