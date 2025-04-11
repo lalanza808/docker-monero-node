@@ -6,7 +6,7 @@ Simple way to run a Monero node with some monitoring and anonymity tools package
 * [nodemapper](./dockerfiles/nodemapper.py) - gathers GeoIP data for peers
 * [Prometheus](https://prometheus.io/docs/introduction/overview/) - monitors the exporter
 * [Grafana](https://grafana.com/) - shows visualizations and dashboards
-* [tor](https://www.torproject.org/) - provides tx relays over tor proxy
+* [tor](https://www.torproject.org/) - provides tx relays over tor proxy and hidden service
 * [i2pd](https://i2pd.website/) - provides tx relays over i2p proxy
 
 
@@ -49,6 +49,8 @@ docker compose build
 docker compose up -d
 ```
 
+### Port Configurations
+
 The following ports will be bound for `monerod` by default, but you can override in `.env`:
 - 18080   # p2p
 - 18081   # restricted rpc
@@ -69,6 +71,20 @@ There are two hard-coded IP addresses for the tor and i2p proxies (monerod requi
 You will want to open/allow ports 18080 and 18081 in your firewall for usage as a remote/public node (or whichever p2p and restricted ports you picked).
 
 Also, you may want to setup a reverse proxy to Grafana if you would like to expose the visualizations for the world to see. Be sure to lock down the administrative settings or leave login disabled! You can see sample images below.
+
+### Onion Address
+
+Your `tor` container will be proxying outbound traffic (hiding transactions) and also allowing incoming connections to the Tor network (hidden service). A random onion address will be generated automatically. To view the address, either check the `monerod` container logs (it will be the first few lines), or read the file like so:
+
+```bash
+docker compose exec -ti tor cat /var/lib/tor/monerod/hostname
+```
+
+Load the URL in your Tor browser at port 18081 to confirm it's availability or for personal usage. http://<onion_address>:18081/get_info
+
+![](./static/tor.png)
+
+It may take a few minutes for it to be reachable. Check the tor container logs to monitor bootstrap progress.
 
 ## Usage
 
