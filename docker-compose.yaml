@@ -148,4 +148,6 @@ services:
       - 127.0.0.1:${UNRESTRICTED_PORT:-18083}:18083 # unrestricted rpc
     networks:
       - tor_net
+    command:
+      - /entrypoint.sh
     <<: *log-config

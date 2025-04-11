@@ -101,15 +101,19 @@ docker compose logs -f
 docker compose logs -f monerod  # make logs
 ```
 
-Navigate to http://localhost:3000 and log into Grafana. Find the `Node Stats` dashboard to get those sweet, sweet graphs.
+### Running Locally
 
-If you've installed this on another system you will want to use [SSH tunnels](https://www.ssh.com/ssh/tunneling/example) (local forwarding) to reach Grafana (if not exposing via reverse proxy):
+Navigate to http://localhost:3000 and find the `Node Stats` dashboard to get those sweet, sweet graphs.
+
+### Running on VPS
+
+If you've installed this on another system you will want to use [SSH tunnels](https://www.ssh.com/ssh/tunneling/example) (local forwarding) to reach Grafana if not running a reverse proxy:
 
 ```
 ssh <VPS OR SERVER IP> -L 3000:localhost:3000
 ```
 
-Then navigate to http://localhost:3000. Here is what the graph looks like:
+Then navigate to http://localhost:3000. Here is what the dashboard looks like:
 
 ![](static/graf1.png)
 
