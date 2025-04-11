@@ -5,3 +5,5 @@ IPv6Exit 0
 Log notice stdout
 PublishServerDescriptor 0
 SOCKSPort 0.0.0.0:9050
+HiddenServiceDir /var/lib/tor/monerod
+HiddenServicePort 18081 monerod:18081
