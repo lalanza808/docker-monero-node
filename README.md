@@ -22,12 +22,31 @@ cd docker-monero-node
 # OPTIONAL: Setup Grafana password, blockchain storage location, or port and container image tag overrides
 cp env-example .env
 vim .env
+```
 
-# Build containers
-docker-compose build  # make build
+There are 2 routes depending on your preference.
 
-# Run containers
-docker-compose up -d  # make up
+### If you want to just pull the images (easier, faster)
+
+This is the default behavior intended for ease of use, gets things running faster. Upstream images are on dockerhub:
+
+* lalanza808/exporter:1.0.0
+* lalanza808/nodemapper:1.0.4
+* lalanza808/tor:1.0.0
+* lalanza808/i2p:1.0.0
+* lalanza808/monero:v0.18.4.0
+
+```bash
+docker compose up -d
+```
+
+### If you want to build the images yourself
+
+Some people prefer to build things locally rather than assume the upstream is correct / not compromised (though you still assume base images are not compromised). You can review the Dockerfiles in [dockerfiles](./dockerfiles)
+
+```bash
+docker compose build
+docker compose up -d
 ```
 
 The following ports will be bound for `monerod` by default, but you can override in `.env`:
@@ -49,21 +68,21 @@ There are two hard-coded IP addresses for the tor and i2p proxies (monerod requi
 
 You will want to open/allow ports 18080 and 18081 in your firewall for usage as a remote/public node (or whichever p2p and restricted ports you picked).
 
-Also, you may want to setup a reverse proxy to Grafana if you would like to expose the visualizations for the world to see. Be sure to lock down the administrative settings or leave login disabled! You can find a live example on my node here: https://singapore.node.xmr.pm
+Also, you may want to setup a reverse proxy to Grafana if you would like to expose the visualizations for the world to see. Be sure to lock down the administrative settings or leave login disabled! You can see sample images below.
 
 ## Usage
 
-It's fairly simple, use `docker-compose` to bring the containers up and down and look at logs.
+It's fairly simple, use `docker compose` to bring the containers up and down and look at logs.
 
 ```
 # Run containers
-docker-compose up -d            # make up
+docker compose up -d            # make up
 
 # Check all logs
-docker-compose logs -f
+docker compose logs -f
 
 # Check monerod logs
-docker-compose logs -f monerod  # make logs
+docker compose logs -f monerod  # make logs
 ```
 
 Navigate to http://localhost:3000 and log into Grafana. Find the `Node Stats` dashboard to get those sweet, sweet graphs.
