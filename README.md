@@ -56,6 +56,7 @@ The following ports will be bound for `monerod` by default, but you can override
 - 18081   # restricted rpc
 - 18082   # zmq
 - 18083   # unrestricted rpc
+- 18084   # tor anonymous-inbound
 
 The following ports are commented out but can be enabled to test things locally:
 - 9090  # prometheus web ui

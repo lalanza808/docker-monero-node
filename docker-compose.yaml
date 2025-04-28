@@ -113,6 +113,7 @@ services:
       # - 127.0.0.1:9050:9050
     volumes:
       - tor:/var/lib/tor/monerod
+      - tor:/var/lib/tor/monerod-rpc
     networks:
       tor_net:
         ipv4_address: 172.31.255.250
@@ -141,11 +142,13 @@ services:
     volumes:
       - ${DATA_DIR:-./data}:/data
       - tor:/var/lib/tor/monerod:ro
+      - tor:/var/lib/tor/monerod-rpc:ro
     ports:
       - ${P2P_PORT:-18080}:18080                    # p2p
       - ${RESTRICTED_PORT:-18081}:18081             # restricted rpc
       - 127.0.0.1:${ZMQ_PORT:-18082}:18082          # zmq
       - 127.0.0.1:${UNRESTRICTED_PORT:-18083}:18083 # unrestricted rpc
+      - 127.0.0.1:${P2P_TOR:-18084}:18084           # tor anonymous-inbound
     networks:
       - tor_net
     command:
