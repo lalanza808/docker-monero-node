@@ -104,7 +104,7 @@ services:
     <<: *log-config
   tor:
     container_name: monerod_tor
-    image: lalanza808/tor:1.0.1
+    image: lalanza808/tor:1.0.2
     build:
       context: .
       dockerfile: dockerfiles/tor
