@@ -7,6 +7,7 @@
 # Example usage:
 #   ./release.sh monero
 #   ./release.sh exporter
+#
 
 set -ex
 
