@@ -106,7 +106,7 @@ services:
       dockerfile: dockerfiles/tor
     restart: unless-stopped
     # ports:
-      # - 127.0.0.1:9050:9050
+    #   - 127.0.0.1:9050:9050
     networks:
       tor_net:
         ipv4_address: 172.31.255.250
@@ -118,7 +118,7 @@ services:
       dockerfile: dockerfiles/i2p
     restart: unless-stopped
     # ports:
-        # - 127.0.0.1:4444:4444
+    #   - 127.0.0.1:4444:4444
     networks:
       tor_net:
         ipv4_address: 172.31.255.251
@@ -130,6 +130,7 @@ services:
       dockerfile: dockerfiles/monero_compile
       args:
         THREADS: ${THREADS:-2}
+        MONERO_RELEASE: ${MONERO_RELEASE:-v0.18.4.1}
     restart: unless-stopped
     depends_on:
       tor:
