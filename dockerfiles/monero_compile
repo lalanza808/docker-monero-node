@@ -1,7 +1,7 @@
 FROM ubuntu:22.04 AS og
 
 ENV DEBIAN_FRONTEND noninteractive
-ENV MONERO_RELEASE v0.18.4.0
+ENV MONERO_RELEASE v0.18.4.1
 
 WORKDIR /opt/monero
 
