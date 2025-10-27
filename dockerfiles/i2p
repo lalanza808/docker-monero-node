@@ -2,10 +2,11 @@ FROM ubuntu:22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update && apt-get install -y wget sudo
-
-# Detect architecture and use it immediately to download and install the corresponding i2pd package.
-RUN set -ex; \
+# Install dependencies, download and install i2pd, then clean up in single layer
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    wget \
+    sudo \
+    && set -ex; \
     arch=$(uname -m); \
     if [ "$arch" = "x86_64" ]; then \
          ARCH="amd64"; \
@@ -15,11 +16,13 @@ RUN set -ex; \
          echo "Unsupported architecture: $arch" && exit 1; \
     fi; \
     echo "Using architecture: $ARCH"; \
-    wget "https://github.com/PurpleI2P/i2pd/releases/download/2.54.0/i2pd_2.54.0-1jammy1_${ARCH}.deb" -O i2pd.deb -q && \
-    apt install ./i2pd.deb -y && \
-    rm -rf i2pd.deb && \
-    apt clean all && \
-    apt autoremove -y
+    wget "https://github.com/PurpleI2P/i2pd/releases/download/2.54.0/i2pd_2.54.0-1jammy1_${ARCH}.deb" -O i2pd.deb -q \
+    && apt-get install ./i2pd.deb -y \
+    && rm -rf i2pd.deb \
+    && apt-get purge -y wget sudo \
+    && apt-get autoremove -y \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN adduser \
    --system \

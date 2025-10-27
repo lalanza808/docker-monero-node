@@ -119,4 +119,3 @@ Then navigate to http://localhost:3000. Here is what the dashboard looks like:
 ![](static/graf1.png)
 
 ![](static/graf2.png)
-

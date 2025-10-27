@@ -1,14 +1,40 @@
+# Build stage
+FROM ubuntu:22.04 AS builder
+
+WORKDIR /srv/nodemapper
+
+# Install build dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    wget \
+    python3 \
+    python3-venv \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create virtual environment and install Python packages
+RUN python3 -m venv .venv
+RUN .venv/bin/pip install --no-cache-dir \
+    flask==3.0.0 \
+    geoip2==4.7.0 \
+    gunicorn==23.0.0
+
+# Download GeoIP database
+RUN wget https://github.com/P3TERX/GeoLite.mmdb/raw/download/GeoLite2-City.mmdb -qO ./geoip.mmdb
+
+# Runtime stage
 FROM ubuntu:22.04
 
 WORKDIR /srv/nodemapper
 
-RUN apt update && apt install wget python3 python3-venv -y
-RUN python3 -m venv .venv
-RUN .venv/bin/pip install flask==3.0.0
-RUN .venv/bin/pip install geoip2==4.7.0
-RUN .venv/bin/pip install gunicorn==23.0.0
-RUN wget https://github.com/P3TERX/GeoLite.mmdb/raw/download/GeoLite2-City.mmdb -qO ./geoip.mmdb
+# Install only runtime dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
+# Copy virtual environment and application files from builder stage
+COPY --from=builder /srv/nodemapper/.venv .venv
+COPY --from=builder /srv/nodemapper/geoip.mmdb ./geoip.mmdb
 COPY dockerfiles/nodemapper.py app.py
 
 ENTRYPOINT [ ".venv/bin/gunicorn", "-b", "0.0.0.0:5000", "app:app" ]

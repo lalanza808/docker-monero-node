@@ -1,33 +1,79 @@
 FROM ubuntu:22.04 AS og
 
-ENV DEBIAN_FRONTEND noninteractive
-ENV MONERO_RELEASE v0.18.4.0
+ARG MONERO_RELEASE_OVERRIDE
+ENV DEBIAN_FRONTEND=noninteractive
 
 WORKDIR /opt/monero
 
-# Install dependencies
-RUN apt-get update && apt-get install -y \
-    build-essential cmake pkg-config libboost-all-dev \
-    libssl-dev libzmq3-dev libunbound-dev libsodium-dev libpgm-dev git wget
+COPY ./dockerfiles/hashestxt.sh /usr/local/bin/hashestxt.sh
+COPY ./files/gpg_keys/binaryfate.asc /opt/monero-gpg-keys/binaryfate.asc
+RUN chmod +x /usr/local/bin/hashestxt.sh
 
-# Clone monero repo
-RUN git clone https://github.com/monero-project/monero --branch=$MONERO_RELEASE --depth=1 .
+# Install dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    cmake \
+    pkg-config \
+    libboost-all-dev \
+    libssl-dev \
+    libzmq3-dev \
+    libunbound-dev \
+    libsodium-dev \
+    libpgm-dev \
+    git \
+    wget \
+    gnupg \
+    && rm -rf /var/lib/apt/lists/*
+
+# Clone monero repo using hashes.txt version detection when not overridden
+RUN set -e; \
+    if DEFAULTS_ENV="$(/usr/local/bin/hashestxt.sh --defaults-only)" && [ -n "${DEFAULTS_ENV}" ]; then \
+        eval "${DEFAULTS_ENV}"; \
+    else \
+        exit 1; \
+    fi; \
+    MONERO_RELEASE="${MONERO_RELEASE_OVERRIDE:-v${MONERO_VERSION}}"; \
+    if [ -z "${MONERO_RELEASE_OVERRIDE:-}" ]; then \
+        if VERSION_ENV="$(/usr/local/bin/hashestxt.sh)" && [ -n "${VERSION_ENV}" ]; then \
+            eval "${VERSION_ENV}"; \
+            MONERO_RELEASE="v${MONERO_VERSION}"; \
+        fi; \
+    fi; \
+    git clone https://github.com/monero-project/monero --branch="${MONERO_RELEASE}" --depth=1 .
 
 # Clone submodules
 RUN git submodule update --init --force
 
 # Compile monero
-ARG THREADS 2
-RUN make -j$THREADS
+ARG THREADS=2
+RUN make -j${THREADS}
 
 # Download ban list
 RUN wget -qO /tmp/ban_list.txt "https://raw.githubusercontent.com/Boog900/monero-ban-list/main/ban_list.txt"
 
+# Runtime stage
 FROM ubuntu:22.04
 
 WORKDIR /data
 
-COPY --from=og /usr/lib/x86_64-linux-gnu/ /usr/lib/x86_64-linux-gnu/
+# Install only the runtime libraries that Monero actually needs
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libboost-system1.74.0 \
+    libboost-filesystem1.74.0 \
+    libboost-thread1.74.0 \
+    libboost-date-time1.74.0 \
+    libboost-chrono1.74.0 \
+    libboost-regex1.74.0 \
+    libboost-serialization1.74.0 \
+    libboost-program-options1.74.0 \
+    libssl3 \
+    libzmq5 \
+    libunbound8 \
+    libsodium23 \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy only the compiled binaries and ban list
 COPY --from=og /opt/monero/build/Linux/_no_branch_/release/bin/monerod /bin/monerod
 COPY --from=og /opt/monero/build/Linux/_no_branch_/release/bin/monero-wallet-cli /bin/monero-wallet-cli
 COPY --from=og /opt/monero/build/Linux/_no_branch_/release/bin/monero-wallet-rpc /bin/monero-wallet-rpc

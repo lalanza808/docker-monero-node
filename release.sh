@@ -13,7 +13,27 @@ set -ex
 
 IMAGE=${1}
 DH_USER=${2:-lalanza808}
-MONERO_VERSION=v0.18.4.0
+
+HASHES_SCRIPT="$(dirname "$0")/dockerfiles/hashestxt.sh"
+if [[ -x "${HASHES_SCRIPT}" ]]; then
+    if HASHES_ENV="$(${HASHES_SCRIPT} --defaults-only)"; then
+        eval "${HASHES_ENV}"
+    else
+        echo "[!] Failed to obtain Monero defaults from hashes.txt script" >&2
+        exit 1
+    fi
+else
+    echo "[!] hashes.txt helper script not found at ${HASHES_SCRIPT}" >&2
+    exit 1
+fi
+
+if HASHES_RUNTIME_ENV="$(${HASHES_SCRIPT})"; then
+    eval "${HASHES_RUNTIME_ENV}"
+else
+    echo "[!] Failed to obtain Monero release data from hashes.txt, using defaults" >&2
+fi
+
+MONERO_VERSION_TAG="v${MONERO_VERSION}"
 MONERO_BASE=${DH_USER}/monero
 EXPORTER_VERSION=1.0.0
 EXPORTER_BASE=${DH_USER}/exporter
@@ -44,8 +64,12 @@ fi
 
 if [[ "${IMAGE}" == "monero" ]]; then
     echo -e "[+] Building monero multi-arch (amd64 & arm64)"
+    echo -e "[+] Using Monero release ${MONERO_VERSION_TAG}"
     docker buildx build --platform linux/amd64,linux/arm64 \
-        -t "${MONERO_BASE}:${MONERO_VERSION}" \
+        --build-arg MONERO_VERSION_OVERRIDE="${MONERO_VERSION}" \
+        --build-arg MONERO_HASH_X64_OVERRIDE="${MONERO_HASH_X64}" \
+        --build-arg MONERO_HASH_ARMV8_OVERRIDE="${MONERO_HASH_ARMV8}" \
+        -t "${MONERO_BASE}:${MONERO_VERSION_TAG}" \
         -t "${MONERO_BASE}:latest" \
         -f dockerfiles/monero . \
         --push
