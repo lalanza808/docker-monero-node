@@ -38,9 +38,9 @@ fi
 echo "Downloading: ${MONERO_DL_URL}"
 wget -q ${MONERO_DL_URL}
 grep ${MONERO_FILE} hashes.txt | sha256sum -c -
-if [ "$?" -eq 0 ]; then \
+if [ "$?" -eq 0 ]; then
     echo -e "[+] Hashes match - proceeding with installation"
-else \
+else
     echo -e "[!] Hashes do not match - exiting"
     exit 3
 fi
