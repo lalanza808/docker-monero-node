@@ -1,64 +1,26 @@
 FROM ubuntu:22.04 AS og
 
-# Define the Monero version
-ENV MONERO_VERSION=0.18.4.0
-
-ENV MONERO_HASH_X64=16cb74c899922887827845a41d37c7f3121462792a540843f2fcabcc1603993f
-ENV MONERO_DL_URL_X64=https://downloads.getmonero.org/cli/monero-linux-x64-v${MONERO_VERSION}.tar.bz2
-ENV MONERO_HASH_ARMV8=f252b6a24e801535bf36fbaaa7b2d6ae44b1efc5d427803d483e3c3a17d6f2cd
-ENV MONERO_DL_URL_ARMV8=https://downloads.getmonero.org/cli/monero-linux-armv8-v${MONERO_VERSION}.tar.bz2
-ENV MONERO_DL_FILE=monero.tar.bz2
-ENV MONERO_SUMS_FILE=sha256sums
-
 WORKDIR /opt/monero
 
 # Update system and install dependencies
 RUN apt-get update \
   && apt-get upgrade -y \
-  && apt-get install -y tar wget bzip2
+  && apt-get install -y \
+  tar wget bzip2 gnupg
 
-# Download Monero binaries from getmonero.org
-# Confirm hashes match
-# Install daemon binary
-# Clean up
-RUN \
-  # Detect architecture and set URL/hash accordingly \
-  if [ "$(uname -m)" = "x86_64" ]; then \
-    echo "Architecture x86_64 detected"; \
-    export MONERO_DL_URL=${MONERO_DL_URL_X64}; \
-    export MONERO_HASH=${MONERO_HASH_X64}; \
-  elif [ "$(uname -m)" = "aarch64" ]; then \
-    echo "Architecture ARM64 detected"; \
-    export MONERO_DL_URL=${MONERO_DL_URL_ARMV8}; \
-    export MONERO_HASH=${MONERO_HASH_ARMV8}; \
-  else \
-    echo "Unsupported architecture: $(uname -m)"; exit 1; \
-  fi && \
-  echo "Using URL: ${MONERO_DL_URL}" && \
-  wget -qO ${MONERO_DL_FILE} ${MONERO_DL_URL} && \
-  echo "${MONERO_HASH}  ${MONERO_DL_FILE}" > ${MONERO_SUMS_FILE} && \
-  sha256sum -c ${MONERO_SUMS_FILE}; \
-  if [ "$?" -eq 0 ]; then \
-    echo -e "[+] Hashes match - proceeding with container build"; \
-  else \
-    echo -e "[!] Hashes do not match - exiting"; \
-    exit 5; \
-  fi && \
-  mkdir ./tmp && \
-  tar xjf ${MONERO_DL_FILE} -C ./tmp --strip 1 && \
-  mv ./tmp/* /usr/local/bin/ && \
-  rm -rf ./tmp ${MONERO_SUMS_FILE} ${MONERO_DL_FILE}
+# Copy static files
+COPY ./dockerfiles/files/monerod .
 
-# Download ban list
-RUN wget -qO /tmp/ban_list.txt "https://raw.githubusercontent.com/Boog900/monero-ban-list/main/ban_list.txt"
+# Run install script
+RUN bash install.sh
 
 # Copy to fresh Ubuntu image to reduce size
 FROM ubuntu:22.04
 COPY --from=og /usr/local/bin/monerod /usr/local/bin/monerod
 COPY --from=og /usr/local/bin/monero-wallet-cli /usr/local/bin/monero-wallet-cli
 COPY --from=og /usr/local/bin/monero-wallet-rpc /usr/local/bin/monero-wallet-rpc
-COPY --from=og /tmp/ban_list.txt /ban_list.txt
-COPY ./dockerfiles/monerod_entrypoint.sh /entrypoint.sh
+COPY ./dockerfiles/files/monerod/ban_list.txt /ban_list.txt
+COPY ./dockerfiles/files/monerod/monerod_entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 EXPOSE 18080
