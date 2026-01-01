@@ -1,7 +1,6 @@
 FROM ubuntu:22.04 AS og
 
 ENV DEBIAN_FRONTEND noninteractive
-ARG MONERO_RELEASE v0.18.4.4
 
 WORKDIR /opt/monero
 
@@ -10,6 +9,10 @@ RUN apt-get update && apt-get install -y \
     build-essential cmake pkg-config libboost-all-dev \
     libssl-dev libzmq3-dev libunbound-dev libsodium-dev libpgm-dev git wget
 
+# Build args
+ARG THREADS 2
+ARG MONERO_RELEASE v0.18.4.4
+
 # Clone monero repo
 RUN git clone https://github.com/monero-project/monero --branch=$MONERO_RELEASE --depth=1 .
 
@@ -17,11 +20,7 @@ RUN git clone https://github.com/monero-project/monero --branch=$MONERO_RELEASE 
 RUN git submodule update --init --force
 
 # Compile monero
-ARG THREADS 2
 RUN make -j$THREADS
-
-# Download ban list
-RUN wget -qO /tmp/ban_list.txt "https://raw.githubusercontent.com/Boog900/monero-ban-list/main/ban_list.txt"
 
 FROM ubuntu:22.04
 
@@ -31,7 +30,9 @@ COPY --from=og /usr/lib/x86_64-linux-gnu/ /usr/lib/x86_64-linux-gnu/
 COPY --from=og /opt/monero/build/Linux/_no_branch_/release/bin/monerod /bin/monerod
 COPY --from=og /opt/monero/build/Linux/_no_branch_/release/bin/monero-wallet-cli /bin/monero-wallet-cli
 COPY --from=og /opt/monero/build/Linux/_no_branch_/release/bin/monero-wallet-rpc /bin/monero-wallet-rpc
-COPY --from=og /tmp/ban_list.txt /ban_list.txt
+COPY ./dockerfiles/files/monerod/ban_list.txt /ban_list.txt
+COPY ./dockerfiles/files/monerod/monerod_entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 EXPOSE 18080
 EXPOSE 18081

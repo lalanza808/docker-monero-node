@@ -110,7 +110,7 @@ services:
       dockerfile: dockerfiles/tor
     restart: unless-stopped
     # ports:
-      # - 127.0.0.1:9050:9050
+    #   - 127.0.0.1:9050:9050
     volumes:
       - tor:/var/lib/tor/
     networks:
@@ -138,6 +138,11 @@ services:
       context: .
       dockerfile: dockerfiles/monero
     restart: unless-stopped
+    depends_on:
+      tor:
+        condition: service_started
+      i2p:
+        condition: service_started
     volumes:
       - ${DATA_DIR:-./data}:/data
       - tor:/var/lib/tor:ro

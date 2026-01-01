@@ -1,6 +1,7 @@
 volumes:
   grafana:
   prometheus:
+  tor:
 
 x-log-config: &log-config
   logging:
@@ -52,17 +53,17 @@ services:
       - ./files/grafana/dashboards:/var/lib/grafana/dashboards:ro
     environment:
       HOSTNAME: grafana
-      GF_SERVER_ROOT_URL: ${GRAFANA_URL}
+      GF_SERVER_ROOT_URL: ${GRAFANA_URL:-}
       GF_ANALYTICS_REPORTING_ENABLED: "false"
       GF_ANALYTICS_CHECK_FOR_UPDATES: "false"
       GF_USERS_ALLOW_SIGN_UP: "false"
       GF_USERS_ALLOW_ORG_CREATE: "false"
-      GF_LOG_LEVEL: "debug"
+      GF_LOG_LEVEL: "info"
       GF_AUTH_ANONYMOUS_ENABLED: "${GF_AUTH_ANONYMOUS_ENABLED:-true}"
       GF_AUTH_BASIC_ENABLED: "${GF_AUTH_BASIC_ENABLED:-false}"
       GF_AUTH_DISABLE_LOGIN_FORM: "${GF_AUTH_DISABLE_LOGIN_FORM:-true}"
-      GF_SECURITY_ADMIN_PASSWORD: "${GF_SECURITY_ADMIN_PASSWORD}"
-      GF_SECURITY_ADMIN_USER: "${GF_SECURITY_ADMIN_USER}"
+      GF_SECURITY_ADMIN_PASSWORD: "${GF_SECURITY_ADMIN_PASSWORD:-}"
+      GF_SECURITY_ADMIN_USER: "${GF_SECURITY_ADMIN_USER:-}"
     networks:
       - tor_net
     <<: *log-config
@@ -107,6 +108,8 @@ services:
     restart: unless-stopped
     # ports:
     #   - 127.0.0.1:9050:9050
+    volumes:
+      - tor:/var/lib/tor/
     networks:
       tor_net:
         ipv4_address: 172.31.255.250
@@ -118,7 +121,8 @@ services:
       dockerfile: dockerfiles/i2p
     restart: unless-stopped
     # ports:
-    #   - 127.0.0.1:4444:4444
+    #     - 127.0.0.1:4447:4447
+    #     - 127.0.0.1:4444:4444
     networks:
       tor_net:
         ipv4_address: 172.31.255.251
@@ -139,30 +143,31 @@ services:
         condition: service_started
     volumes:
       - ${DATA_DIR:-./data}:/data
+      - tor:/var/lib/tor:ro
     ports:
       - ${P2P_PORT:-18080}:18080                    # p2p
       - ${RESTRICTED_PORT:-18081}:18081             # restricted rpc
       - 127.0.0.1:${ZMQ_PORT:-18082}:18082          # zmq
       - 127.0.0.1:${UNRESTRICTED_PORT:-18083}:18083 # unrestricted rpc
+      - 127.0.0.1:${P2P_TOR:-18084}:18084           # tor anonymous-inbound
+    networks:
+      - tor_net
     command:
-      - monerod
-      - --data-dir=/data
-      - --p2p-bind-ip=0.0.0.0
-      - --p2p-bind-port=18080
-      - --rpc-restricted-bind-ip=0.0.0.0
-      - --rpc-restricted-bind-port=18081
-      - --zmq-rpc-bind-ip=0.0.0.0
-      - --zmq-rpc-bind-port=18082
-      - --rpc-bind-ip=0.0.0.0
-      - --rpc-bind-port=18083
-      - --non-interactive
-      - --confirm-external-bind
-      - --public-node
-      - --log-level=0
-      - --rpc-ssl=disabled
-      - --ban-list=/ban_list.txt
-      - --tx-proxy=tor,172.31.255.250:9050,disable_noise,24
-      - --tx-proxy=i2p,172.31.255.251:4447,disable_noise,24
+      - /entrypoint.sh
+    <<: *log-config
+  explorer:
+    container_name: monerod_explorer
+    image: lalanza808/moneroexplorer:v1.0.0
+    restart: unless-stopped
+    ports:
+      - 127.0.0.1:${EXPLORER_PORT:-8000}:8000
+    environment:
+      NODE: http://monerod:18083
+      NOJS: ${EXPLORER_NOJS:-0}
+      THEME: ${EXPLORER_THEME:-light}
+    depends_on:
+      monerod:
+        condition: service_started
     networks:
       - tor_net
     <<: *log-config
