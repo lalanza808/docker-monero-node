@@ -2,9 +2,9 @@ FROM ubuntu:24.04
 
 RUN apt-get update && apt-get install tor -y
 
-RUN mkdir -p /run/tor /var/lib/tor/monerod /var/lib/tor/monero-rpc \
-  && chown -R debian-tor:debian-tor /run/tor /var/lib/tor/monerod /var/lib/tor/monero-rpc \
-  && chmod 700 -R /run/tor /var/lib/tor/monerod /var/lib/tor/monero-rpc
+RUN mkdir -p /run/tor /var/lib/tor/monerod /var/lib/tor/monerod-rpc \
+  && chown -R debian-tor:debian-tor /run/tor /var/lib/tor/monerod /var/lib/tor/monerod-rpc \
+  && chmod 700 -R /run/tor /var/lib/tor/monerod /var/lib/tor/monerod-rpc
 
 COPY dockerfiles/tor-config /etc/tor/torrc
 
