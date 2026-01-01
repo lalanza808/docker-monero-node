@@ -26,6 +26,7 @@ export P2P_ONION_ADDRESS=$(cat /var/lib/tor/monerod/hostname)
 
 echo "=========================================="
 echo "Your Monero RPC Onion address is: ${ONION_ADDRESS}"
+echo "Your Monero P2P Onion address is: ${P2P_ONION_ADDRESS}"
 echo "=========================================="
 
 sleep 3
