@@ -8,6 +8,7 @@ Simple way to run a Monero node with some monitoring and anonymity tools package
 * [Grafana](https://grafana.com/) - shows visualizations and dashboards
 * [tor](https://www.torproject.org/) - provides tx relays over tor proxy and hidden service
 * [i2pd](https://i2pd.website/) - provides tx relays over i2p proxy
+* [explorer](https://github.com/lalanza808/moneroexplorer) - block explorer
 
 
 ## Setup
@@ -86,6 +87,13 @@ Load the URL in your Tor browser at port 18081 to confirm it's availability or f
 ![](./static/tor.png)
 
 It may take a few minutes for it to be reachable. Check the tor container logs to monitor bootstrap progress.
+
+### Block Explorer
+
+* [lalanza808/moneroexplorer](https://github.com/lalanza808/moneroexplorer)
+* [lalanza808/moneroexplorer:v1.0.0](https://hub.docker.com/r/lalanza808/moneroexplorer)
+
+There is a built-in block explorer by default running on port 8000 (http://localhost:8000). Check [env-example](./env-example) to override these values.
 
 ## Usage
 

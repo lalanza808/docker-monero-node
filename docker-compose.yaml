@@ -152,3 +152,19 @@ services:
     command:
       - /entrypoint.sh
     <<: *log-config
+  explorer:
+    container_name: monerod_explorer
+    image: lalanza808/moneroexplorer:v1.0.0
+    restart: unless-stopped
+    ports:
+      - 127.0.0.1:${EXPLORER_PORT:-8000}:8000
+    environment:
+      NODE: http://monerod:18083
+      NOJS: ${EXPLORER_NOJS:-0}
+      THEME: ${EXPLORER_THEME:-light}
+    depends_on:
+      monerod:
+        condition: service_started
+    networks:
+      - tor_net
+    <<: *log-config
