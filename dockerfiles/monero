@@ -9,7 +9,9 @@ RUN apt-get update \
   tar wget bzip2 gnupg
 
 # Copy static files
-COPY ./dockerfiles/files/monerod .
+COPY ./dockerfiles/files/monerod/binaryfate.asc .
+COPY ./dockerfiles/files/monerod/hashes.txt .
+COPY ./dockerfiles/files/monerod/install.sh .
 
 # Run install script
 RUN bash install.sh
