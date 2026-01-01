@@ -34,7 +34,7 @@ This is the default behavior intended for ease of use, gets things running faste
 * lalanza808/nodemapper:1.0.4
 * lalanza808/tor:1.0.2
 * lalanza808/i2p:1.0.0
-* lalanza808/monero:v0.18.4.0
+* lalanza808/monero:v0.18.4.4
 
 ```bash
 docker compose up -d

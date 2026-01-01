@@ -133,7 +133,7 @@ services:
     <<: *log-config
   monerod:
     container_name: monerod
-    image: lalanza808/monero:v0.18.4.0
+    image: lalanza808/monero:v0.18.4.4
     build:
       context: .
       dockerfile: dockerfiles/monero
