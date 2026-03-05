@@ -7,6 +7,7 @@ RUN mkdir -p /run/tor /var/lib/tor/monerod /var/lib/tor/monerod-rpc \
   && chmod 700 -R /run/tor /var/lib/tor/monerod /var/lib/tor/monerod-rpc
 
 COPY dockerfiles/tor-config /etc/tor/torrc
+RUN chmod 644 /etc/tor/torrc
 
 USER debian-tor
 
