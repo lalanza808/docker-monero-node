@@ -134,7 +134,7 @@ services:
       dockerfile: dockerfiles/monero_compile
       args:
         THREADS: ${THREADS:-2}
-        MONERO_RELEASE: ${MONERO_RELEASE:-v0.18.5.1}
+        MONERO_RELEASE: ${MONERO_RELEASE:-v0.18.5.3}
     restart: unless-stopped
     depends_on:
       tor:
